@@ -2,15 +2,14 @@ package gocardless_pro_go
 
 import (
 	"fmt"
-	"golang.org/x/crypto/nacl/box"
 )
 
 type BankDetailsLookupService service
 
 const (
-	AUTOGIRO 	= "autogiro"
-	BACS 		= "bacs"
-	SEPA_CORE 	= "sepa_core"
+	AUTOGIRO  = "autogiro"
+	BACS      = "bacs"
+	SEPA_CORE = "sepa_core"
 )
 
 type AvailableDebitScheme struct {
@@ -22,19 +21,19 @@ type AvailableDebitSchemeList struct {
 }
 
 type BankDetailsLookupRequest struct {
-	AccountNumber	string 		`json:"account_number,omitempty"`
-	BankCode		string		`json:"bank_code,omitempty"`
-	BranchCode		string		`json:"branch_code,omitempty"`
-	CountryCode		string		`json:"country_code,omitempty"`
-	Iban			string		`json:"iban,omitempty"`
+	AccountNumber string        `json:"account_number,omitempty"`
+	BankCode      string        `json:"bank_code,omitempty"`
+	BranchCode    string        `json:"branch_code,omitempty"`
+	CountryCode   string        `json:"country_code,omitempty"`
+	Iban          string        `json:"iban,omitempty"`
 }
 
 type BankDetailsLookup struct {
-	BankName        string  					`json:"bank_name,omitempty"`
-	BIC            	string 						`json:"bic,omitempty"`
-	CustomerId	    AvailableDebitSchemeList 	`json:"available_debit_schemes,omitempty"`
-	ResponseUrl	  	string						`json:"responseurl,omitempty"`
-	Metadata        Metadata 					`json:"metadata,omitempty"`
+	BankName    string                    `json:"bank_name,omitempty"`
+	BIC         string                        `json:"bic,omitempty"`
+	CustomerId  AvailableDebitSchemeList    `json:"available_debit_schemes,omitempty"`
+	ResponseUrl string                        `json:"responseurl,omitempty"`
+	Metadata    Metadata                    `json:"metadata,omitempty"`
 }
 
 func (availableDebitSchemeList *AvailableDebitSchemeList) AddDebitScheme(debitScheme AvailableDebitScheme) []AvailableDebitScheme {
@@ -51,4 +50,3 @@ func (s *BankDetailsLookupService) Lookup(txn *BankDetailsLookupRequest) (*Respo
 
 	return resp, err
 }
-

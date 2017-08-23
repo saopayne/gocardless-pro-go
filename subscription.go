@@ -36,3 +36,4 @@ type UpcomingPayment struct {
 	ChargeDate	string		`json:"charge_date,omitempty"`
 }
 
+

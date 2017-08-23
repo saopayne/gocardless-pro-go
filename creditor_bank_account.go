@@ -10,34 +10,34 @@ type CreditorBankAccountList struct {
 	Values []CreditorBankAccount `json:"data"`
 }
 type CreditorBankAccountCreateRequest struct {
-	AccountNumber				string 				`json:"account_number,omitempty"`
-	BankCode					string				`json:"bank_code,omitempty"`
-	BranchCode					string				`json:"branch_code,omitempty"`
-	CountryCode					string				`json:"country_code,omitempty"`
-	Iban						string				`json:"iban,omitempty"`
-	AccountHolderName			string				`json:"account_holder_name,omitempty"`
-	Currency					string 				`json:"currency,omitempty"`
-	Links						[]CreditorLink		`json:"links,omitempty"`
-	Metadata					map[string]string	`json:"metadata,omitempty"`
-	SetAsDefaultPayoutAccount	bool				`json:"set_as_default_payout_account,omitempty"`
+	AccountNumber             string                `json:"account_number,omitempty"`
+	BankCode                  string                `json:"bank_code,omitempty"`
+	BranchCode                string                `json:"branch_code,omitempty"`
+	CountryCode               string                `json:"country_code,omitempty"`
+	Iban                      string                `json:"iban,omitempty"`
+	AccountHolderName         string                `json:"account_holder_name,omitempty"`
+	Currency                  string                `json:"currency,omitempty"`
+	Links                     []CreditorLink        `json:"links,omitempty"`
+	Metadata                  map[string]string     `json:"metadata,omitempty"`
+	SetAsDefaultPayoutAccount bool                  `json:"set_as_default_payout_account,omitempty"`
 }
 
 type CreditorBankAccountDisableRequest struct {
-	Identity		string			`json:"identity,omitempty"`
+	Identity 	string  	`json:"identity,omitempty"`
 }
 
 type CreditorBankAccount struct {
-	Id        			string  					`json:"id,omitempty"`
-	BankName      		string  					`json:"bank_name,omitempty"`
-	CountryCode			string						`json:"country_code,omitempty"`
-	CreatedAt			string						`json:"created_at,omitempty"`
-	Currency			string 						`json:"currency,omitempty"`
-	AccountHolderName	string						`json:"account_holder_name,omitempty"`
-	AccountNumberEnding	string						`json:"account_number_ending,omitempty"`
-	Enabled				bool						`json:"enabled,omitempty"`
-	Links				[]CreditorLink				`json:"links,omitempty"`
-	Metadata			map[string]string			`json:"metadata,omitempty"`
-	ResponseUrl	  		string						`json:"responseurl,omitempty"`
+	Id                  string                    `json:"id,omitempty"`
+	BankName            string                    `json:"bank_name,omitempty"`
+	CountryCode         string                    `json:"country_code,omitempty"`
+	CreatedAt           string                    `json:"created_at,omitempty"`
+	Currency            string                    `json:"currency,omitempty"`
+	AccountHolderName   string                    `json:"account_holder_name,omitempty"`
+	AccountNumberEnding string                    `json:"account_number_ending,omitempty"`
+	Enabled             bool                      `json:"enabled,omitempty"`
+	Links               []CreditorLink            `json:"links,omitempty"`
+	Metadata            map[string]string         `json:"metadata,omitempty"`
+	ResponseUrl         string                    `json:"responseurl,omitempty"`
 }
 
 // Create creates a new credit bank account
@@ -84,4 +84,3 @@ func (s *CreditorBankAccountService) Disable(bankAccount *CreditorBankAccountDis
 
 	return resp, err
 }
-
