@@ -39,3 +39,11 @@ type PayoutLink struct {
 	Creditor				string        	`json:"creditor,omitempty"`
 	CreditorBankAccount		string			`json:"creditor_bank_account,omitempty"`
 }
+
+type RefundLink struct {
+	Payment			string			`json:"payment,omitempty"`
+}
+
+type SubscriptionLink struct {
+	Mandate		string 		`json:"mandate,omitempty"`
+}
