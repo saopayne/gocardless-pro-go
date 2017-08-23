@@ -5,27 +5,26 @@ import (
 	"net/url"
 )
 
-// CustomerService handles operations related to the customer
-// For more details see https://developers.paystack.co/v1.0/reference#create-customer
 type CustomerService service
 
-// Customer is the resource representing your Paystack customer.
-// For more details see https://developers.paystack.co/v1.0/reference#create-customer
 type Customer struct {
-	ID             int            `json:"id,omitempty"`
-	CreatedAt      string         `json:"createdAt,omitempty"`
-	UpdatedAt      string         `json:"updatedAt,omitempty"`
-	Domain         string         `json:"domain,omitempty"`
-	Integration    int            `json:"integration,omitempty"`
-	FirstName      string         `json:"first_name,omitempty"`
-	LastName       string         `json:"last_name,omitempty"`
-	Email          string         `json:"email,omitempty"`
-	Phone          string         `json:"phone,omitempty"`
-	Metadata       Metadata       `json:"metadata,omitempty"`
-	CustomerCode   string         `json:"customer_code,omitempty"`
-	Subscriptions  []Subscription `json:"subscriptions,omitempty"`
-	Authorizations []interface{}  `json:"authorizations,omitempty"`
-	RiskAction     string         `json:"risk_action"`
+	ID             			int            		`json:"id,omitempty"`
+	CreatedAt      			string         		`json:"createdAt,omitempty"`
+	UpdatedAt      			string         		`json:"updatedAt,omitempty"`
+	AddressLine1			string				`json:"address_line_1,omitempty"`
+	AddressLine2			string				`json:"address_line_2,omitempty"`
+	AddressLine3			string				`json:"address_line_3,omitempty"`
+	CompanyName				string				`json:"company_name,omitempty"`
+	CountryCode				string				`json:"country_code,omitempty"`
+	Email          			string         		`json:"email,omitempty"`
+	FamilyName      		string         		`json:"family_name,omitempty"`
+	GivenName       		string         		`json:"given_name,omitempty"`
+	City					string				`json:"city,omitempty"`
+	Language				string				`json:"language,omitempty"`
+	PostalCode				string				`json:"postal_code,omitempty"`
+	Region					string				`json:"region,omitempty"`
+	SwedishIdentityNumber	string				`json:"swedish_identity_number,omitempty"`
+	Metadata       			map[string]string   `json:"metadata,omitempty"`
 }
 
 // CustomerList is a list object for customers.

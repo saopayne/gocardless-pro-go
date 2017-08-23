@@ -10,7 +10,7 @@ type SchemeIdentifierList struct {
 	list []SchemeIdentifier
 }
 
-type CreditorRequest struct {
+type Creditor struct {
 	Id        			string  					`json:"id,omitempty"`
 	Name      			string  					`json:"name,omitempty"`
 	Region          	string 						`json:"region,omitempty"`

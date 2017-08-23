@@ -5,7 +5,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 )
 
-type BankDetailsLookup service
+type BankDetailsLookupService service
 
 const (
 	AUTOGIRO 	= "autogiro"
@@ -22,7 +22,7 @@ type AvailableDebitSchemeList struct {
 }
 
 
-type BankDetailsLookupRequest struct {
+type BankDetailsLookup struct {
 	BankName        string  					`json:"bank_name,omitempty"`
 	BIC            	string 						`json:"bic,omitempty"`
 	CustomerId	    AvailableDebitSchemeList 	`json:"available_debit_schemes,omitempty"`
