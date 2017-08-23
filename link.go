@@ -28,3 +28,14 @@ type MandateLink struct {
 	NewMandate				string			`json:"new_mandate,omitempty"`
 }
 
+type PaymentLink struct {
+	Creditor     	string     	   `json:"creditor,omitempty"`
+	Mandate      	string   	   `json:"mandate,omitempty"`
+	Payout       	string         `json:"payout,omitempty"`
+	Subscription 	string         `json:"subscription,omitempty"`
+}
+
+type PayoutLink struct {
+	Creditor				string        	`json:"creditor,omitempty"`
+	CreditorBankAccount		string			`json:"creditor_bank_account,omitempty"`
+}
