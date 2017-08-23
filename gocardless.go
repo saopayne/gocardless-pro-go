@@ -22,8 +22,7 @@ const (
 	// defaultHTTPTimeout is the default timeout on the http client
 	defaultHTTPTimeout = 40 * time.Second
 
-	// base URL for all Flutterwave API requests
-	baseURL = "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/flwv3-pug/getpaidx/api"
+	baseURL = "https://api.gocardless.com"
 
 	// User agent used when communicating with the Flutterwave API.
 	userAgent = "flutterwave-go/" + version
@@ -33,16 +32,15 @@ type service struct {
 	client *Client
 }
 
-// Client manages communication with the Paystack API
+// Client manages communication with the GoCardless API
 type Client struct {
 	common service      // Reuse a single struct instead of allocating one for each service on the heap.
 	client *http.Client // HTTP client used to communicate with the API.
-	// the API Key used to authenticate all Paystack API requests
+	// the API Key used to authenticate all GoCardless API requests
 	key string
 	baseURL *url.URL
 	logger Logger
-	// Services supported by the Paystack API.
-	// Miscellaneous actions are directly implemented on the Client object
+
 	Customer     *CustomerService
 	LoggingEnabled bool
 	Logger         Logger
@@ -78,7 +76,7 @@ type ListMeta struct {
 }
 
 
-// NewClient creates a new Paystack API client with the given API key
+// NewClient creates a new GoCardless API client with the given API key
 // and HTTP client, allowing overriding of the HTTP client to use.
 // This is useful if you're running in a Google AppEngine environment
 // where the http.DefaultClient is not available.
@@ -117,7 +115,7 @@ func (c *Client) Call(method, path string, body, v interface{}) error {
 
 	if err != nil {
 		if c.LoggingEnabled {
-			c.Logger.Printf("Cannot create Paystack request: %v\n", err)
+			c.Logger.Printf("Cannot create GoCardless request: %v\n", err)
 		}
 		return err
 	}
@@ -151,7 +149,7 @@ func (c *Client) Call(method, path string, body, v interface{}) error {
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		if c.LoggingEnabled {
-			c.Logger.Printf("Request to Paystack failed: %v\n", err)
+			c.Logger.Printf("Request to GoCardless failed: %v\n", err)
 		}
 		return err
 	}
@@ -162,7 +160,7 @@ func (c *Client) Call(method, path string, body, v interface{}) error {
 
 	if status, _ := respMap["status"].(bool); !status && resp.StatusCode >= 400 {
 		if c.LoggingEnabled {
-			c.Logger.Printf("Paystack error: %v\n", err)
+			c.Logger.Printf("GoCardless error: %v\n", err)
 		}
 		return responseToError(resp, respMap)
 	}
@@ -217,10 +215,10 @@ func mapstruct(data interface{}, v interface{}) error {
 }
 
 func getTestKey() string {
-	key := os.Getenv("FLUTTERWAVE_KEY")
+	key := os.Getenv("GOCARDLESS-KEY")
 
 	if len(key) == 0 {
-		panic("FLUTTER_WAVE environment variable is not set\n")
+		panic("GOCARDLESS environment variable is not set\n")
 	}
 
 	return key

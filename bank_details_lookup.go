@@ -21,6 +21,13 @@ type AvailableDebitSchemeList struct {
 	list []AvailableDebitScheme
 }
 
+type BankDetailsLookupRequest struct {
+	AccountNumber	string 		`json:"account_number,omitempty"`
+	BankCode		string		`json:"bank_code,omitempty"`
+	BranchCode		string		`json:"branch_code,omitempty"`
+	CountryCode		string		`json:"country_code,omitempty"`
+	Iban			string		`json:"iban,omitempty"`
+}
 
 type BankDetailsLookup struct {
 	BankName        string  					`json:"bank_name,omitempty"`
@@ -34,3 +41,14 @@ func (availableDebitSchemeList *AvailableDebitSchemeList) AddDebitScheme(debitSc
 	availableDebitSchemeList.list = append(availableDebitSchemeList.list, debitScheme)
 	return availableDebitSchemeList.list
 }
+
+// Performs a bank details lookup
+// As part of the lookup a modulus check and reachability check are performed.
+func (s *BankDetailsLookupService) Lookup(txn *BankDetailsLookupRequest) (*Response, error) {
+	u := fmt.Sprintf("/bank_details_lookups")
+	resp := &Response{}
+	err := s.client.Call("POST", u, txn, resp)
+
+	return resp, err
+}
+
