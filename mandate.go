@@ -92,7 +92,7 @@ func (s *MandateService) ListNMandates(count, offset int, req *MandateListReques
 
 
 func (s *MandateService) GetMandate(id string) (*Mandate, error) {
-	u := fmt.Sprintf("/customer_bank_accounts/%s", id)
+	u := fmt.Sprintf("/mandates/%s", id)
 	mandate := &Mandate{}
 	err := s.client.Call("GET", u, nil, mandate)
 
@@ -100,24 +100,33 @@ func (s *MandateService) GetMandate(id string) (*Mandate, error) {
 }
 
 
-// Update updates a customer's properties.
-// For more details see https://developer.gocardless.com/api-reference/#customer-bank-accounts-update-a-customer-bank-account
-func (s *CustomerBankAccountService) UpdateMandate(customerBankAccount *CustomerBankAccount) (*CustomerBankAccount, error) {
-	u := fmt.Sprintf("customer_bank_accounts/%d", customerBankAccount.Id)
-	account := &CustomerBankAccount{}
-	err := s.client.Call("PUT", u, customerBankAccount, account)
+func (s *MandateService) UpdateMandate(updatedMandate *Mandate, metadata map[string]string) (*Mandate, error) {
+	params := url.Values{}
+	params.Add("metadata", string(metadata))
+	u := fmt.Sprintf("mandates/%d", updatedMandate.ID)
+	mandate := &Mandate{}
+	err := s.client.Call("PUT", u, params, mandate)
 
-	return account, err
+	return mandate, err
 }
 
 
-// Immediately disables the bank account, no money can be paid out to a disabled account.
-// https://developer.gocardless.com/api-reference/#customer-bank-accounts-disable-a-customer-bank-account
-func (s *CustomerBankAccountService) DisableCustomerBankAccount(bankAccount *CustomerBankAccount) (*Response, error) {
-	u := fmt.Sprintf("/customer_bank_accounts/%s/actions/disable", bankAccount.Id)
+func (s *MandateService) CancelMandate(mandateToCancel *Mandate, metadata map[string]string) (*Response, error) {
+	params := url.Values{}
+	params.Add("metadata", string(metadata))
+	u := fmt.Sprintf("/mandates/%s/actions/cancel", mandateToCancel.ID)
 	resp := &Response{}
-	err := s.client.Call("POST", u, bankAccount, resp)
+	err := s.client.Call("POST", u, params, resp)
 
 	return resp, err
 }
 
+func (s *MandateService) ReinstateMandate(mandateToReinstate *Mandate, metadata map[string]string) (*Response, error) {
+	params := url.Values{}
+	params.Add("metadata", string(metadata))
+	u := fmt.Sprintf("/mandates/%s/actions/reinstate", mandateToReinstate.ID)
+	resp := &Response{}
+	err := s.client.Call("POST", u, params, resp)
+
+	return resp, err
+}
