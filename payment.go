@@ -1,6 +1,9 @@
 package gocardless_pro_go
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 type PaymentService service
 
@@ -30,9 +33,10 @@ type PaymentListRequest struct {
 	After				string		`json:"after,omitempty"`
 	Creditor			string		`json:"creditor,omitempty"`
 	Customer			string		`json:"customer,omitempty"`
-	CustomerBankAccount string		`json:"customer_bank_account,omitempty"`
-	Reference			string		`json:"reference,omitempty"`
 	Status				string		`json:"status,omitempty"`
+	Currency			string		`json:"currency,omitempty"`
+	Mandate				string		`json:"mandate,omitempty"`
+	Subscription		string		`json:"subscription,omitempty"`
 }
 
 type PaymentList struct {
@@ -63,11 +67,11 @@ func (s *PaymentService) CreatePayment(paymentReq *PaymentCreateRequest) (*Payme
 }
 
 // List returns a list of mandates
-func (s *MandateService) ListPayments(req *MandateListRequest) (*MandateList, error) {
-	return s.ListNMandates(10, 0, req)
+func (s *PaymentService) ListPayments(req *PaymentListRequest) (*PaymentList, error) {
+	return s.ListNPayments(10, 0, req)
 }
 
-func (s *MandateService) ListNMandates(count, offset int, req *MandateListRequest) (*MandateList, error) {
+func (s *PaymentService) ListNPayments(count, offset int, req *PaymentListRequest) (*PaymentList, error) {
 	params := url.Values{}
 	params.Add("after", req.After)
 	params.Add("before", req.Before)
@@ -76,25 +80,26 @@ func (s *MandateService) ListNMandates(count, offset int, req *MandateListReques
 	params.Add("created_at[lt]", req.CreatedAt.Lt)
 	params.Add("created_at[lte]", req.CreatedAt.Lte)
 	params.Add("limit", string(req.Limit))
-	params.Add("reference", req.Reference)
 	params.Add("status", req.Status)
-	params.Add("customer_bank_account", req.CustomerBankAccount)
+	params.Add("mandate", req.Mandate)
 	params.Add("customer", req.Customer)
 	params.Add("creditor", req.Creditor)
-	u := paginateURL("/mandates", count, offset)
-	mandates := &MandateList{}
-	err := s.client.Call("GET", u, params, mandates)
+	params.Add("currency", req.Currency)
+	params.Add("subscription", req.Subscription)
+	u := paginateURL("/payments", count, offset)
+	payments := &PaymentList{}
+	err := s.client.Call("GET", u, params, payments)
 
-	return mandates, err
+	return payments, err
 }
 
 
-func (s *MandateService) GetMandate(id string) (*Mandate, error) {
-	u := fmt.Sprintf("/mandates/%s", id)
-	mandate := &Mandate{}
-	err := s.client.Call("GET", u, nil, mandate)
+func (s *PaymentService) GetPayment(id string) (*Payment, error) {
+	u := fmt.Sprintf("/payments/%s", id)
+	payment := &Payment{}
+	err := s.client.Call("GET", u, nil, payment)
 
-	return mandate, err
+	return payment, err
 }
 
 
