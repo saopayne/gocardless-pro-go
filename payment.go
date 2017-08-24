@@ -41,7 +41,7 @@ type PaymentListRequest struct {
 
 type PaymentList struct {
 	Meta   ListMeta
-	Values []CustomerBankAccount `json:"data"`
+	Values []Payment `json:"data"`
 }
 
 type PaymentCreateRequest struct {
@@ -66,7 +66,7 @@ func (s *PaymentService) CreatePayment(paymentReq *PaymentCreateRequest) (*Payme
 	return payment, err
 }
 
-// List returns a list of mandates
+// List returns a list of payments
 func (s *PaymentService) ListPayments(req *PaymentListRequest) (*PaymentList, error) {
 	return s.ListNPayments(10, 0, req)
 }
@@ -86,6 +86,7 @@ func (s *PaymentService) ListNPayments(count, offset int, req *PaymentListReques
 	params.Add("creditor", req.Creditor)
 	params.Add("currency", req.Currency)
 	params.Add("subscription", req.Subscription)
+
 	u := paginateURL("/payments", count, offset)
 	payments := &PaymentList{}
 	err := s.client.Call("GET", u, params, payments)
