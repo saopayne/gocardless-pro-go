@@ -1,6 +1,9 @@
 package gocardless_pro_go
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 type CreditorBankAccountService service
 
@@ -9,6 +12,7 @@ type CreditorBankAccountList struct {
 	Meta   ListMeta
 	Values []CreditorBankAccount `json:"data"`
 }
+
 type CreditorBankAccountCreateRequest struct {
 	AccountNumber             string                `json:"account_number,omitempty"`
 	BankCode                  string                `json:"bank_code,omitempty"`
@@ -26,6 +30,16 @@ type CreditorBankAccountDisableRequest struct {
 	Identity 	string  	`json:"identity,omitempty"`
 }
 
+type CreditorBankAccountListRequest struct {
+	CreatedAt 	CreatedAt		`json:"created_at,omitempty"`
+	Limit		int				`json:"limit,omitempty"`
+	Before		string			`json:"before,omitempty"`
+	After		string			`json:"after,omitempty"`
+	Creditor	string			`json:"creditor,omitempty"`
+	Enabled		string			`json:"enabled,omitempty"`
+}
+
+
 type CreditorBankAccount struct {
 	Id                  string                    `json:"id,omitempty"`
 	BankName            string                    `json:"bank_name,omitempty"`
@@ -41,7 +55,7 @@ type CreditorBankAccount struct {
 }
 
 // Create creates a new credit bank account
-func (s *CreditorBankAccountService) Create(bankAccount *CreditorBankAccountCreateRequest) (*CreditorBankAccount, error) {
+func (s *CreditorBankAccountService) CreateCreditorBankAccount(bankAccount *CreditorBankAccountCreateRequest) (*CreditorBankAccount, error) {
 	u := fmt.Sprintf("/creditor_bank_accounts")
 	account := &CreditorBankAccount{}
 	err := s.client.Call("POST", u, bankAccount, account)
@@ -51,23 +65,31 @@ func (s *CreditorBankAccountService) Create(bankAccount *CreditorBankAccountCrea
 
 // List returns a list of credit bank accounts.
 // https://developer.gocardless.com/api-reference/#creditor-bank-accounts-list-creditor-bank-accounts
-func (s *CreditorBankAccountService) List() (*CreditorBankAccountList, error) {
-	return s.ListN(10, 0)
+func (s *CreditorBankAccountService) ListCreditorBankAccount(req *CreditorBankAccountListRequest) (*CreditorBankAccountList, error) {
+	return s.ListNCreditorBankAccount(10, 0, req)
 }
 
 // ListN Returns a cursor-paginated list of your creditor bank accounts.
 // https://developer.gocardless.com/api-reference/#creditor-bank-accounts-list-creditor-bank-accounts
-func (s *CreditorBankAccountService) ListN(count, offset int) (*CreditorBankAccountList, error) {
+func (s *CreditorBankAccountService) ListNCreditorBankAccount(count, offset int, req *CreditorBankAccountListRequest) (*CreditorBankAccountList, error) {
+	params := url.Values{}
+	params.Add("after", req.After)
+	params.Add("before", req.Before)
+	params.Add("created_at[gt]", req.CreatedAt.Gt)
+	params.Add("created_at[gte]", req.CreatedAt.Gte)
+	params.Add("created_at[lt]", req.CreatedAt.Lt)
+	params.Add("created_at[lte]", req.CreatedAt.Lte)
+	params.Add("limit", string(req.Limit))
 	u := paginateURL("/creditor_bank_accounts", count, offset)
 	bankAccounts := &CreditorBankAccountList{}
-	err := s.client.Call("GET", u, nil, bankAccounts)
+	err := s.client.Call("GET", u, params, bankAccounts)
 
 	return bankAccounts, err
 }
 
 // Retrieves the details of an existing creditor bank account.
 // https://developer.gocardless.com/api-reference/#creditor-bank-accounts-get-a-single-creditor-bank-account
-func (s *CreditorBankAccountService) Get(id string) (*CreditorBankAccount, error) {
+func (s *CreditorBankAccountService) GetCreditorBankAccount(id string) (*CreditorBankAccount, error) {
 	u := fmt.Sprintf("/creditor_bank_accounts/%s", id)
 	txn := &CreditorBankAccount{}
 	err := s.client.Call("GET", u, nil, txn)
@@ -77,7 +99,7 @@ func (s *CreditorBankAccountService) Get(id string) (*CreditorBankAccount, error
 
 // Immediately disables the bank account, no money can be paid out to a disabled account.
 // https://developer.gocardless.com/api-reference/#creditor-bank-accounts-disable-a-creditor-bank-account
-func (s *CreditorBankAccountService) Disable(bankAccount *CreditorBankAccountDisableRequest) (*Response, error) {
+func (s *CreditorBankAccountService) DisableCreditorBankAccount(bankAccount *CreditorBankAccountDisableRequest) (*Response, error) {
 	u := fmt.Sprintf("/creditor_bank_accounts/%s/actions/disable", bankAccount.Identity)
 	resp := &Response{}
 	err := s.client.Call("POST", u, bankAccount, resp)

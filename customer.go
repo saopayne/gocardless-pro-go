@@ -1,4 +1,4 @@
-package gocardless_pro_go
+ package gocardless_pro_go
 
 import (
 	"fmt"
@@ -93,7 +93,7 @@ func (s *CustomerService) Update(customer *Customer) (*Customer, error) {
 
 // Get returns the details of a customer.
 // For more details https://developer.gocardless.com/api-reference/#customers-get-a-single-customer
-func (s *CustomerService) Get(id int) (*Customer, error) {
+func (s *CustomerService) Get(id string) (*Customer, error) {
 	u := fmt.Sprintf("/customers/%d", id)
 	cust := &Customer{}
 	err := s.client.Call("GET", u, nil, cust)
@@ -106,7 +106,7 @@ func (s *CustomerService) List(req *CustomerListRequest) (*CustomerList, error) 
 }
 
 // ListN returns a list of customers
-func (s *CustomerService) ListN(count, offset int,req *CustomerListRequest) (*CustomerList, error) {
+func (s *CustomerService) ListN(count, offset int, req *CustomerListRequest) (*CustomerList, error) {
 	params := url.Values{}
 	params.Add("after", req.After)
 	params.Add("before", req.Before)
