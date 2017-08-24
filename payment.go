@@ -103,31 +103,31 @@ func (s *PaymentService) GetPayment(id string) (*Payment, error) {
 }
 
 
-func (s *MandateService) UpdateMandate(updatedMandate *Mandate, metadata map[string]string) (*Mandate, error) {
+func (s *PaymentService) UpdatePayment(updatedPayment *Payment, metadata map[string]string) (*Payment, error) {
 	params := url.Values{}
 	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("mandates/%d", updatedMandate.ID)
-	mandate := &Mandate{}
-	err := s.client.Call("PUT", u, params, mandate)
+	u := fmt.Sprintf("payments/%d", updatedPayment.ID)
+	payment := &Payment{}
+	err := s.client.Call("PUT", u, params, payment)
 
-	return mandate, err
+	return payment, err
 }
 
 
-func (s *MandateService) CancelMandate(mandateToCancel *Mandate, metadata map[string]string) (*Response, error) {
+func (s *PaymentService) CancelPayment(paymentToCancel *Payment, metadata map[string]string) (*Response, error) {
 	params := url.Values{}
 	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("/mandates/%s/actions/cancel", mandateToCancel.ID)
+	u := fmt.Sprintf("/payments/%s/actions/cancel", paymentToCancel.ID)
 	resp := &Response{}
 	err := s.client.Call("POST", u, params, resp)
 
 	return resp, err
 }
 
-func (s *MandateService) ReinstateMandate(mandateToReinstate *Mandate, metadata map[string]string) (*Response, error) {
+func (s *MandateService) RetryPayment(payment *Payment, metadata map[string]string) (*Response, error) {
 	params := url.Values{}
 	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("/mandates/%s/actions/reinstate", mandateToReinstate.ID)
+	u := fmt.Sprintf("/payments/%s/actions/retry", payment.ID)
 	resp := &Response{}
 	err := s.client.Call("POST", u, params, resp)
 
