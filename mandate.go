@@ -90,14 +90,13 @@ func (s *MandateService) ListNMandates(count, offset int, req *MandateListReques
 	return mandates, err
 }
 
-// Retrieves the details of an existing customer bank account.
-// https://developer.gocardless.com/api-reference/#customer-bank-accounts-get-a-single-customer-bank-account
-func (s *CustomerBankAccountService) GetMandate(id string) (*CustomerBankAccount, error) {
-	u := fmt.Sprintf("/customer_bank_accounts/%s", id)
-	account := &CustomerBankAccount{}
-	err := s.client.Call("GET", u, nil, account)
 
-	return account, err
+func (s *MandateService) GetMandate(id string) (*Mandate, error) {
+	u := fmt.Sprintf("/customer_bank_accounts/%s", id)
+	mandate := &Mandate{}
+	err := s.client.Call("GET", u, nil, mandate)
+
+	return mandate, err
 }
 
 
