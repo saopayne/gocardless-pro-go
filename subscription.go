@@ -3,6 +3,7 @@ package gocardless_pro_go
 import (
 	"fmt"
 	"time"
+	"net/url"
 )
 
 type SubscriptionService service
@@ -89,12 +90,12 @@ func (s *SubscriptionService) CreateSubscription(subscriptionReq *SubscriptionCr
 	return subscription, err
 }
 
-// List returns a list of payments
-func (s *PaymentService) ListPayments(req *PaymentListRequest) (*PaymentList, error) {
-	return s.ListNPayments(10, 0, req)
+// List returns a list of subscriptions
+func (s *SubscriptionService) ListSubscriptions(req *SubscriptionListRequest) (*SubscriptionList, error) {
+	return s.ListNSubscriptions(10, 0, req)
 }
 
-func (s *PaymentService) ListNPayments(count, offset int, req *PaymentListRequest) (*PaymentList, error) {
+func (s *SubscriptionService) ListNSubscriptions(count, offset int, req *SubscriptionListRequest) (*SubscriptionList, error) {
 	params := url.Values{}
 	params.Add("after", req.After)
 	params.Add("before", req.Before)
@@ -103,18 +104,14 @@ func (s *PaymentService) ListNPayments(count, offset int, req *PaymentListReques
 	params.Add("created_at[lt]", req.CreatedAt.Lt)
 	params.Add("created_at[lte]", req.CreatedAt.Lte)
 	params.Add("limit", string(req.Limit))
-	params.Add("status", req.Status)
 	params.Add("mandate", req.Mandate)
 	params.Add("customer", req.Customer)
-	params.Add("creditor", req.Creditor)
-	params.Add("currency", req.Currency)
-	params.Add("subscription", req.Subscription)
 
-	u := paginateURL("/payments", count, offset)
-	payments := &PaymentList{}
-	err := s.client.Call("GET", u, params, payments)
+	u := paginateURL("/subscriptions", count, offset)
+	subscriptions := &SubscriptionList{}
+	err := s.client.Call("GET", u, params, subscriptions)
 
-	return payments, err
+	return subscriptions, err
 }
 
 
