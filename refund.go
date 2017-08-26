@@ -83,12 +83,13 @@ func (s *RefundService) GetRefund(id string) (*Refund, error) {
 }
 
 
-func (s *PaymentService) UpdatePayment(updatedPayment *Payment, metadata map[string]string) (*Payment, error) {
+func (s *RefundService) UpdateRefund(updatedRefund *Refund, metadata map[string]string) (*Refund, error) {
 	params := url.Values{}
 	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("payments/%d", updatedPayment.ID)
-	payment := &Payment{}
-	err := s.client.Call("PUT", u, params, payment)
+	u := fmt.Sprintf("/refunds/%d", updatedRefund.ID)
+	refund := &Refund{}
+	err := s.client.Call("PUT", u, params, refund)
 
-	return payment, err
+	return refund, err
 }
+

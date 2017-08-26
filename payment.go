@@ -107,7 +107,7 @@ func (s *PaymentService) GetPayment(id string) (*Payment, error) {
 func (s *PaymentService) UpdatePayment(updatedPayment *Payment, metadata map[string]string) (*Payment, error) {
 	params := url.Values{}
 	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("payments/%d", updatedPayment.ID)
+	u := fmt.Sprintf("/payments/%d", updatedPayment.ID)
 	payment := &Payment{}
 	err := s.client.Call("PUT", u, params, payment)
 
