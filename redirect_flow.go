@@ -1,6 +1,9 @@
 package gocardless_pro_go
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 type RedirectFlowService service
 
@@ -60,5 +63,15 @@ func (s *RedirectFlowService) GetRedirectFlow(id string) (*RedirectFlow, error) 
 	err := s.client.Call("GET", u, nil, rFlow)
 
 	return rFlow, err
+}
+
+func  (s *PaymentService) CompleteRedirectFlow(rFlowToComplete *RedirectFlow, sessionToken string) (*Response, error) {
+	params := url.Values{}
+	params.Add("session_token", sessionToken)
+	u := fmt.Sprintf("/redirect_flows/%s/actions/complete", rFlowToComplete.ID)
+	resp := &Response{}
+	err := s.client.Call("POST", u, params, resp)
+
+	return resp, err
 }
 
