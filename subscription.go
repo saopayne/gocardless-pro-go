@@ -115,12 +115,12 @@ func (s *SubscriptionService) ListNSubscriptions(count, offset int, req *Subscri
 }
 
 
-func (s *PaymentService) GetPayment(id string) (*Payment, error) {
-	u := fmt.Sprintf("/payments/%s", id)
-	payment := &Payment{}
-	err := s.client.Call("GET", u, nil, payment)
+func (s *SubscriptionService) GetSubscription(id string) (*Subscription, error) {
+	u := fmt.Sprintf("/subscriptions/%s", id)
+	sub := &Subscription{}
+	err := s.client.Call("GET", u, nil, sub)
 
-	return payment, err
+	return sub, err
 }
 
 
