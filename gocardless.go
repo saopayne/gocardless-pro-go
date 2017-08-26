@@ -25,7 +25,7 @@ const (
 	baseURL = "https://api.gocardless.com"
 
 	// User agent used when communicating with the Flutterwave API.
-	userAgent = "flutterwave-go/" + version
+	userAgent = "gocardless-go/" + version
 )
 
 type service struct {
