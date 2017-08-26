@@ -137,24 +137,12 @@ func (s *SubscriptionService) UpdateSubscription(updatedSubscription *Subscripti
 }
 
 
-func (s *PaymentService) CancelPayment(paymentToCancel *Payment, metadata map[string]string) (*Response, error) {
+func (s *SubscriptionService) CancelSubscription(subscriptionToCancel *Subscription, metadata map[string]string) (*Response, error) {
 	params := url.Values{}
 	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("/payments/%s/actions/cancel", paymentToCancel.ID)
+	u := fmt.Sprintf("/subscriptions/%s/actions/cancel", subscriptionToCancel.ID)
 	resp := &Response{}
 	err := s.client.Call("POST", u, params, resp)
 
 	return resp, err
 }
-
-func (s *MandateService) RetryPayment(payment *Payment, metadata map[string]string) (*Response, error) {
-	params := url.Values{}
-	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("/payments/%s/actions/retry", payment.ID)
-	resp := &Response{}
-	err := s.client.Call("POST", u, params, resp)
-
-	return resp, err
-}
-
-
