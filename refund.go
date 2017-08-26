@@ -74,12 +74,12 @@ func (s *RefundService) ListNRefunds(count, offset int, req *RefundListRequest) 
 }
 
 
-func (s *PaymentService) GetRefund(id string) (*Payment, error) {
-	u := fmt.Sprintf("/payments/%s", id)
-	payment := &Payment{}
+func (s *RefundService) GetRefund(id string) (*Refund, error) {
+	u := fmt.Sprintf("/refunds/%s", id)
+	refund := &Refund{}
 	err := s.client.Call("GET", u, nil, payment)
 
-	return payment, err
+	return refund, err
 }
 
 
