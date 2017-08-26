@@ -1,6 +1,9 @@
 package gocardless_pro_go
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 type RefundService service
 
@@ -20,12 +23,7 @@ type RefundListRequest struct {
 	Limit				int			`json:"limit,omitempty"`
 	Before				string		`json:"before,omitempty"`
 	After				string		`json:"after,omitempty"`
-	Creditor			string		`json:"creditor,omitempty"`
-	Customer			string		`json:"customer,omitempty"`
-	Status				string		`json:"status,omitempty"`
-	Currency			string		`json:"currency,omitempty"`
-	Mandate				string		`json:"mandate,omitempty"`
-	Subscription		string		`json:"subscription,omitempty"`
+	Payment				string		`json:"payment,omitempty"`
 }
 
 type RefundList struct {
@@ -52,12 +50,12 @@ func (s *RefundService) CreateRefund(refundReq *RefundCreateRequest) (*Refund, e
 	return refund, err
 }
 
-// List returns a list of refund
-func (s *PaymentService) ListPayments(req *PaymentListRequest) (*PaymentList, error) {
-	return s.ListNPayments(10, 0, req)
+// List returns a list of refunds
+func (s *RefundService) ListRefunds(req *RefundListRequest) (*RefundList, error) {
+	return s.ListNRefunds(10, 0, req)
 }
 
-func (s *PaymentService) ListNPayments(count, offset int, req *PaymentListRequest) (*PaymentList, error) {
+func (s *RefundService) ListNRefunds(count, offset int, req *RefundListRequest) (*RefundList, error) {
 	params := url.Values{}
 	params.Add("after", req.After)
 	params.Add("before", req.Before)
@@ -66,22 +64,17 @@ func (s *PaymentService) ListNPayments(count, offset int, req *PaymentListReques
 	params.Add("created_at[lt]", req.CreatedAt.Lt)
 	params.Add("created_at[lte]", req.CreatedAt.Lte)
 	params.Add("limit", string(req.Limit))
-	params.Add("status", req.Status)
-	params.Add("mandate", req.Mandate)
-	params.Add("customer", req.Customer)
-	params.Add("creditor", req.Creditor)
-	params.Add("currency", req.Currency)
-	params.Add("subscription", req.Subscription)
+	params.Add("payment", req.Payment)
 
-	u := paginateURL("/payments", count, offset)
-	payments := &PaymentList{}
-	err := s.client.Call("GET", u, params, payments)
+	u := paginateURL("/refunds", count, offset)
+	refunds := &RefundList{}
+	err := s.client.Call("GET", u, params, refunds)
 
-	return payments, err
+	return refunds, err
 }
 
 
-func (s *PaymentService) GetPayment(id string) (*Payment, error) {
+func (s *PaymentService) GetRefund(id string) (*Payment, error) {
 	u := fmt.Sprintf("/payments/%s", id)
 	payment := &Payment{}
 	err := s.client.Call("GET", u, nil, payment)
