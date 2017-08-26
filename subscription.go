@@ -124,14 +124,16 @@ func (s *SubscriptionService) GetSubscription(id string) (*Subscription, error) 
 }
 
 
-func (s *PaymentService) UpdatePayment(updatedPayment *Payment, metadata map[string]string) (*Payment, error) {
+func (s *SubscriptionService) UpdateSubscription(updatedSubscription *Subscription, name string, reference string, metadata map[string]string) (*Subscription, error) {
 	params := url.Values{}
 	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("/payments/%d", updatedPayment.ID)
-	payment := &Payment{}
-	err := s.client.Call("PUT", u, params, payment)
+	params.Add("payment_reference", reference)
+	params.Add("name", name)
+	u := fmt.Sprintf("/subscriptions/%d", updatedSubscription.ID)
+	sub := &Subscription{}
+	err := s.client.Call("PUT", u, params, sub)
 
-	return payment, err
+	return sub, err
 }
 
 
