@@ -1,0 +1,3 @@
+package: github.com/saopayne/gocardless-pro-go
+import:
+- package: github.com/mitchellh/mapstructure

@@ -18,13 +18,10 @@ import (
 const (
 	// library version
 	version = "0.1.0"
-
 	// defaultHTTPTimeout is the default timeout on the http client
 	defaultHTTPTimeout = 40 * time.Second
-
 	baseURL = "https://api.gocardless.com"
-
-	// User agent used when communicating with the Flutterwave API.
+	// User agent used when communicating with the Gocardless API.
 	userAgent = "gocardless-go/" + version
 )
 
@@ -34,16 +31,23 @@ type service struct {
 
 // Client manages communication with the GoCardless API
 type Client struct {
-	common service      // Reuse a single struct instead of allocating one for each service on the heap.
-	client *http.Client // HTTP client used to communicate with the API.
+	common 	service      // Reuse a single struct instead of allocating one for each service on the heap.
+	client 	*http.Client // HTTP client used to communicate with the API.
 	// the API Key used to authenticate all GoCardless API requests
-	key string
+	key 	string
 	baseURL *url.URL
-	logger Logger
+	logger 	Logger
 
-	Customer     *CustomerService
-	LoggingEnabled bool
-	Logger         Logger
+	BankDetailsLookup		*BankDetailsLookupService
+	Creditor				*CreditorService
+	CreditorBankAccount		*CreditorBankAccountService
+	Customer     			*CustomerService
+	CustomerBankAccount		*CustomerBankAccountService
+	Mandate					*RedirectFlowService
+	Refund					*RefundService
+	Subscription			*SubscriptionService
+	LoggingEnabled 			bool
+	Logger         			Logger
 }
 
 
