@@ -35,6 +35,7 @@ type Client struct {
 	client 	*http.Client // HTTP client used to communicate with the API.
 	// the API Key used to authenticate all GoCardless API requests
 	key 	string
+	secret 	string // don't know if this is necessary though
 	baseURL *url.URL
 	logger 	Logger
 
@@ -104,7 +105,7 @@ func NewClient(key string, httpClient *http.Client) *Client {
 	return c
 }
 
-// s.client.Call("POST", "/v1/plans", PlanRequest{}, &plan)
+// s.client.Call("POST", "/v1/", PlanRequest{}, &plan)
 func (c *Client) Call(method, path string, body, v interface{}) error {
 	var buf io.ReadWriter
 	if body != nil {
