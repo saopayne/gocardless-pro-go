@@ -8,6 +8,6 @@ go:
 install:
   - go get github.com/golang/lint/golint
   - go get github.com/Masterminds/glide
-#script:
-#  - make deps
-#  - make
+script:
+  - make deps
+  - make
