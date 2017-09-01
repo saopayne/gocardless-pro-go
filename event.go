@@ -1,76 +1,63 @@
-package gocardless_pro_go
+package main
 
 import (
-	"net/url"
 	"fmt"
+	"net/url"
 )
 
 type EventService service
 
 type Event struct {
-	Action			string					`json:"action,omitempty"`
-	ID        		string  				`json:"id,omitempty"`
-	Links			[]EventLink				`json:"links,omitempty"`
-	Metadata		map[string]string		`json:"metadata,omitempty"`
-	ResponseUrl	  	string					`json:"responseurl,omitempty"`
-	Details			Details					`json:"details,omitempty"`
-	ResourceType    ResourceType  			`json:"resource_type,omitempty"`
+	Action       string            `json:"action,omitempty"`
+	ID           string            `json:"id,omitempty"`
+	Links        []EventLink       `json:"links,omitempty"`
+	Metadata     map[string]string `json:"metadata,omitempty"`
+	ResponseUrl  string            `json:"responseurl,omitempty"`
+	Details      Details           `json:"details,omitempty"`
+	ResourceType ResourceType      `json:"resource_type,omitempty"`
 }
 
 type Details struct {
-	Cause			string 		`json:"cause,omitempty"`
-	Description		string		`json:"description,omitempty"`
-	Origin			Origin		`json:"origin,omitempty"`
-	ReasonCode		string		`json:"reason_code,omitempty"`
-	Scheme			Scheme		`json:"scheme,omitempty"`
+	Cause       string `json:"cause,omitempty"`
+	Description string `json:"description,omitempty"`
+	Origin      Origin `json:"origin,omitempty"`
+	ReasonCode  string `json:"reason_code,omitempty"`
+	Scheme      Scheme `json:"scheme,omitempty"`
 }
 
 type Origin struct {
-	Origin			string		`json:"origin,omitempty"`
+	Origin string `json:"origin,omitempty"`
 }
 
 type Scheme struct {
-	Scheme			string		`json:"scheme,omitempty"`
+	Scheme string `json:"scheme,omitempty"`
 }
 
 type ResourceType struct {
-	ResourceType 	string		`json:"resource_type,omitempty"`
+	ResourceType string `json:"resource_type,omitempty"`
 }
-
-type unary struct {
-	str string
-}
-
-var (
-	payment = unary{"payment"}
-	mandate = unary{"mandate"}
-	payout	= unary{"payout"}
-	refund	= unary{"refund"}
-	subscription = unary{"subscription"}
-)
 
 
 type EventListRequest struct {
-	CreatedAt 		CreatedAt		`json:"created_at,omitempty"`
-	Limit			int				`json:"limit,omitempty"`
-	Before			string			`json:"before,omitempty"`
-	After			string			`json:"after,omitempty"`
-	Include			unary			`json:"include,omitempty"`
-	Action			string			`json:"action,omitempty"`
-	Mandate			string			`json:"mandate,omitempty"`
-	ParentEvent		string			`json:"parent_event,omitempty"`
-	Payment			string			`json:"payment,omitempty"`
-	Refund			string			`json:"refund,omitempty"`
-	Payout			string			`json:"payout,omitempty"`
-	ResourceType	ResourceType	`json:"resource_type,omitempty"`
-	Subscription	Subscription	`json:"subscription,omitempty"`
+	CreatedAt    CreatedAt    `json:"created_at,omitempty"`
+	Limit        int          `json:"limit,omitempty"`
+	Before       string       `json:"before,omitempty"`
+	After        string       `json:"after,omitempty"`
+	Include      string        `json:"include,omitempty"`
+	Action       string       `json:"action,omitempty"`
+	Mandate      string       `json:"mandate,omitempty"`
+	ParentEvent  string       `json:"parent_event,omitempty"`
+	Payment      string       `json:"payment,omitempty"`
+	Refund       string       `json:"refund,omitempty"`
+	Payout       string       `json:"payout,omitempty"`
+	ResourceType ResourceType `json:"resource_type,omitempty"`
+	Subscription Subscription `json:"subscription,omitempty"`
 }
 
 type EventList struct {
 	Meta   ListMeta
 	Values []Event `json:"data"`
 }
-
 
 // Returns a cursor-paginated list of your events.
 // https://developer.gocardless.com/api-reference/#events-list-events
@@ -105,15 +92,11 @@ func (s *EventService) ListNEvents(count, offset int, req *EventListRequest) (*E
 	return events, err
 }
 
-
 // Get returns the details of an event.
 func (s *EventService) GetEvent(id string) (*Event, error) {
-	u := fmt.Sprintf("/events/%d", id)
+	u := fmt.Sprintf("/events/%s", id)
 	event := &Event{}
 	err := s.client.Call("GET", u, nil, event)
 
 	return event, err
 }
-
-
-

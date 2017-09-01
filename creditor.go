@@ -1,4 +1,4 @@
-package gocardless_pro_go
+package main
 
 import (
 	"fmt"
@@ -16,48 +16,48 @@ type SchemeIdentifierList struct {
 }
 
 type Creditor struct {
-	Id        			string  					`json:"id,omitempty"`
-	Name      			string  					`json:"name,omitempty"`
-	Region          	string 						`json:"region,omitempty"`
-	PostalCode			string 						`json:"postal_code,omitempty"`
-	LogoUrl				string 						`json:"logo_url,omitempty"`
-	City				string 						`json:"city,omitempty"`
-	AddressLine1		string						`json:"address_line1,omitempty"`
-	AddressLine2		string						`json:"address_line2,omitempty"`
-	AddressLine3		string						`json:"address_line3,omitempty"`
-	CountryCode			string						`json:"country_code,omitempty"`
-	CreatedAt			string						`json:"created_at,omitempty"`
-	VerificationStatus	[]string					`json:"verification_status,omitempty"`
-	Links				[]string					`json:"links,omitempty"`
-	SchemeIdentifiers	[]string					`json:"scheme_identifiers,omitempty"`
-	ResponseUrl	  		string						`json:"responseurl,omitempty"`
-	Metadata        	Metadata 					`json:"metadata,omitempty"`
+	Id                 string   `json:"id,omitempty"`
+	Name               string   `json:"name,omitempty"`
+	Region             string   `json:"region,omitempty"`
+	PostalCode         string   `json:"postal_code,omitempty"`
+	LogoUrl            string   `json:"logo_url,omitempty"`
+	City               string   `json:"city,omitempty"`
+	AddressLine1       string   `json:"address_line1,omitempty"`
+	AddressLine2       string   `json:"address_line2,omitempty"`
+	AddressLine3       string   `json:"address_line3,omitempty"`
+	CountryCode        string   `json:"country_code,omitempty"`
+	CreatedAt          string   `json:"created_at,omitempty"`
+	VerificationStatus []string `json:"verification_status,omitempty"`
+	Links              []string `json:"links,omitempty"`
+	SchemeIdentifiers  []string `json:"scheme_identifiers,omitempty"`
+	ResponseUrl        string   `json:"responseurl,omitempty"`
+	Metadata           Metadata `json:"metadata,omitempty"`
 }
 
 type CreditorCreateRequest struct {
-	Name      			string  					`json:"name,omitempty"`
-	Region          	string 						`json:"region,omitempty"`
-	PostalCode			string 						`json:"postal_code,omitempty"`
-	City				string 						`json:"city,omitempty"`
-	AddressLine1		string						`json:"address_line1,omitempty"`
-	AddressLine2		string						`json:"address_line2,omitempty"`
-	AddressLine3		string						`json:"address_line3,omitempty"`
-	CountryCode			string						`json:"country_code,omitempty"`
-	Links				[]string					`json:"links,omitempty"`
+	Name         string   `json:"name,omitempty"`
+	Region       string   `json:"region,omitempty"`
+	PostalCode   string   `json:"postal_code,omitempty"`
+	City         string   `json:"city,omitempty"`
+	AddressLine1 string   `json:"address_line1,omitempty"`
+	AddressLine2 string   `json:"address_line2,omitempty"`
+	AddressLine3 string   `json:"address_line3,omitempty"`
+	CountryCode  string   `json:"country_code,omitempty"`
+	Links        []string `json:"links,omitempty"`
 }
 
 type CreatedAt struct {
-	Gt		string		`json:"gt,omitempty"`
-	Gte		string		`json:"gte,omitempty"`
-	Lt		string		`json:"lt,omitempty"`
-	Lte		string		`json:"lte,omitempty"`
+	Gt  string `json:"gt,omitempty"`
+	Gte string `json:"gte,omitempty"`
+	Lt  string `json:"lt,omitempty"`
+	Lte string `json:"lte,omitempty"`
 }
 
 type CreditorListRequest struct {
-	CreatedAt 	CreatedAt		`json:"created_at,omitempty"`
-	Limit		int				`json:"limit,omitempty"`
-	Before		string			`json:"before,omitempty"`
-	After		string			`json:"after,omitempty"`
+	CreatedAt CreatedAt `json:"created_at,omitempty"`
+	Limit     int       `json:"limit,omitempty"`
+	Before    string    `json:"before,omitempty"`
+	After     string    `json:"after,omitempty"`
 }
 
 type CreditorList struct {
@@ -66,18 +66,17 @@ type CreditorList struct {
 }
 
 type CreditorUpdateRequest struct {
-	Name      			string  					`json:"name,omitempty"`
-	Region          	string 						`json:"region,omitempty"`
-	PostalCode			string 						`json:"postal_code,omitempty"`
-	City				string 						`json:"city,omitempty"`
-	AddressLine1		string						`json:"address_line1,omitempty"`
-	AddressLine2		string						`json:"address_line2,omitempty"`
-	AddressLine3		string						`json:"address_line3,omitempty"`
-	CountryCode			string						`json:"country_code,omitempty"`
-	Identity			string						`json:"identity,omitempty"`
-	Links				[]string					`json:"links,omitempty"`
+	Name         string   `json:"name,omitempty"`
+	Region       string   `json:"region,omitempty"`
+	PostalCode   string   `json:"postal_code,omitempty"`
+	City         string   `json:"city,omitempty"`
+	AddressLine1 string   `json:"address_line1,omitempty"`
+	AddressLine2 string   `json:"address_line2,omitempty"`
+	AddressLine3 string   `json:"address_line3,omitempty"`
+	CountryCode  string   `json:"country_code,omitempty"`
+	Identity     string   `json:"identity,omitempty"`
+	Links        []string `json:"links,omitempty"`
 }
-
 
 // creates a new creditor
 // https://developer.gocardless.com/api-reference/#creditors-create-a-creditor
@@ -89,11 +88,9 @@ func (s *CreditorService) Create(creditor *Creditor) (*Creditor, error) {
 	return crd, err
 }
 
-
 func (s *CreditorService) List(req *CreditorListRequest) (*CreditorList, error) {
 	return s.ListN(100, 10, req)
 }
-
 
 func (s *CreditorService) ListN(count, offset int, req *CreditorListRequest) (*CreditorList, error) {
 	params := url.Values{}
@@ -122,7 +119,7 @@ func (s *CreditorService) Get(id int) (*Creditor, error) {
 
 // Update updates a creditor's properties.
 func (s *CreditorService) Update(creditor *Creditor) (*Creditor, error) {
-	u := fmt.Sprintf("creditors/%d", creditor.Id)
+	u := fmt.Sprintf("creditors/%s", creditor.Id)
 	sub := &Creditor{}
 	err := s.client.Call("PUT", u, creditor, sub)
 

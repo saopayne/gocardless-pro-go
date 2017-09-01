@@ -1,4 +1,4 @@
- package gocardless_pro_go
+package main
 
 import (
 	"fmt"
@@ -8,61 +8,60 @@ import (
 type CustomerService service
 
 type Customer struct {
-	ID             			int            		`json:"id,omitempty"`
-	CreatedAt      			string         		`json:"createdAt,omitempty"`
-	UpdatedAt      			string         		`json:"updatedAt,omitempty"`
-	AddressLine1			string				`json:"address_line1,omitempty"`
-	AddressLine2			string				`json:"address_line2,omitempty"`
-	AddressLine3			string				`json:"address_line3,omitempty"`
-	CompanyName				string				`json:"company_name,omitempty"`
-	CountryCode				string				`json:"country_code,omitempty"`
-	Email          			string         		`json:"email,omitempty"`
-	FamilyName      		string         		`json:"family_name,omitempty"`
-	GivenName       		string         		`json:"given_name,omitempty"`
-	City					string				`json:"city,omitempty"`
-	Language				string				`json:"language,omitempty"`
-	PostalCode				string				`json:"postal_code,omitempty"`
-	Region					string				`json:"region,omitempty"`
-	SwedishIdentityNumber	string				`json:"swedish_identity_number,omitempty"`
-	Metadata       			map[string]string   `json:"metadata,omitempty"`
+	ID                    int               `json:"id,omitempty"`
+	CreatedAt             string            `json:"createdAt,omitempty"`
+	UpdatedAt             string            `json:"updatedAt,omitempty"`
+	AddressLine1          string            `json:"address_line1,omitempty"`
+	AddressLine2          string            `json:"address_line2,omitempty"`
+	AddressLine3          string            `json:"address_line3,omitempty"`
+	CompanyName           string            `json:"company_name,omitempty"`
+	CountryCode           string            `json:"country_code,omitempty"`
+	Email                 string            `json:"email,omitempty"`
+	FamilyName            string            `json:"family_name,omitempty"`
+	GivenName             string            `json:"given_name,omitempty"`
+	City                  string            `json:"city,omitempty"`
+	Language              string            `json:"language,omitempty"`
+	PostalCode            string            `json:"postal_code,omitempty"`
+	Region                string            `json:"region,omitempty"`
+	SwedishIdentityNumber string            `json:"swedish_identity_number,omitempty"`
+	Metadata              map[string]string `json:"metadata,omitempty"`
 }
 
 type CustomerCreateRequest struct {
-	ID             			int            		`json:"id,omitempty"`
-	AddressLine1			string				`json:"address_line1,omitempty"`
-	AddressLine2			string				`json:"address_line2,omitempty"`
-	AddressLine3			string				`json:"address_line3,omitempty"`
-	CompanyName				string				`json:"company_name,omitempty"`
-	CountryCode				string				`json:"country_code,omitempty"`
-	Email          			string         		`json:"email,omitempty"`
-	FamilyName      		string         		`json:"family_name,omitempty"`
-	GivenName       		string         		`json:"given_name,omitempty"`
-	City					string				`json:"city,omitempty"`
-	Language				string				`json:"language,omitempty"`
-	PostalCode				string				`json:"postal_code,omitempty"`
-	Region					string				`json:"region,omitempty"`
-	SwedishIdentityNumber	string				`json:"swedish_identity_number,omitempty"`
+	ID                    int    `json:"id,omitempty"`
+	AddressLine1          string `json:"address_line1,omitempty"`
+	AddressLine2          string `json:"address_line2,omitempty"`
+	AddressLine3          string `json:"address_line3,omitempty"`
+	CompanyName           string `json:"company_name,omitempty"`
+	CountryCode           string `json:"country_code,omitempty"`
+	Email                 string `json:"email,omitempty"`
+	FamilyName            string `json:"family_name,omitempty"`
+	GivenName             string `json:"given_name,omitempty"`
+	City                  string `json:"city,omitempty"`
+	Language              string `json:"language,omitempty"`
+	PostalCode            string `json:"postal_code,omitempty"`
+	Region                string `json:"region,omitempty"`
+	SwedishIdentityNumber string `json:"swedish_identity_number,omitempty"`
 }
 
-
 type CustomerListRequest struct {
-	CreatedAt 	CreatedAt		`json:"created_at,omitempty"`
-	Limit		int				`json:"limit,omitempty"`
-	Before		string			`json:"before,omitempty"`
-	After		string			`json:"after,omitempty"`
+	CreatedAt CreatedAt `json:"created_at,omitempty"`
+	Limit     int       `json:"limit,omitempty"`
+	Before    string    `json:"before,omitempty"`
+	After     string    `json:"after,omitempty"`
 }
 
 type CustomerUpdateRequest struct {
-	Name      			string  					`json:"name,omitempty"`
-	Region          	string 						`json:"region,omitempty"`
-	PostalCode			string 						`json:"postal_code,omitempty"`
-	City				string 						`json:"city,omitempty"`
-	AddressLine1		string						`json:"address_line1,omitempty"`
-	AddressLine2		string						`json:"address_line2,omitempty"`
-	AddressLine3		string						`json:"address_line3,omitempty"`
-	CountryCode			string						`json:"country_code,omitempty"`
-	Identity			string						`json:"identity,omitempty"`
-	Links				[]string					`json:"links,omitempty"`
+	Name         string   `json:"name,omitempty"`
+	Region       string   `json:"region,omitempty"`
+	PostalCode   string   `json:"postal_code,omitempty"`
+	City         string   `json:"city,omitempty"`
+	AddressLine1 string   `json:"address_line1,omitempty"`
+	AddressLine2 string   `json:"address_line2,omitempty"`
+	AddressLine3 string   `json:"address_line3,omitempty"`
+	CountryCode  string   `json:"country_code,omitempty"`
+	Identity     string   `json:"identity,omitempty"`
+	Links        []string `json:"links,omitempty"`
 }
 
 // CustomerList is a list object for customers.
@@ -94,7 +93,7 @@ func (s *CustomerService) Update(customer *Customer) (*Customer, error) {
 // Get returns the details of a customer.
 // For more details https://developer.gocardless.com/api-reference/#customers-get-a-single-customer
 func (s *CustomerService) Get(id string) (*Customer, error) {
-	u := fmt.Sprintf("/customers/%d", id)
+	u := fmt.Sprintf("/customers/%s", id)
 	cust := &Customer{}
 	err := s.client.Call("GET", u, nil, cust)
 
@@ -102,7 +101,7 @@ func (s *CustomerService) Get(id string) (*Customer, error) {
 }
 
 func (s *CustomerService) List(req *CustomerListRequest) (*CustomerList, error) {
-	return s.ListN(100,10, req)
+	return s.ListN(100, 10, req)
 }
 
 // ListN returns a list of customers

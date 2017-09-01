@@ -1,4 +1,4 @@
-package gocardless_pro_go
+package main
 
 type ChargeService service
 
@@ -10,7 +10,7 @@ type Bank struct {
 type Card struct {
 	Number            string `json:"card_number,omitempty"`
 	CVV               string `json:"card_cvc,omitempty"`
-	ExpiryMonth      string `json:"expiry_month,omitempty"`
+	ExpiryMonth       string `json:"expiry_month,omitempty"`
 	ExpiryYear        string `json:"expiry_year,omitempty"`
 	AddressLine1      string `json:"address_line1,omitempty"`
 	AddressLine2      string `json:"address_line2,omitempty"`
@@ -21,28 +21,26 @@ type Card struct {
 }
 
 type ChargeRequest struct {
-	Amount            float32  	`json:"amount,omitempty"`
-	AuthModel		  string 	`json:"authmodel,omitempty"`
-	CardNumber        string 	`json:"cardno,omitempty"`
-	CVV               string 	`json:"cvv,omitempty"`
-	Currency		  string 	`json:"currency,omitempty"`
-	CustomerId		  Customer 	`json:"custid,omitempty"`
-	ExpiryMonth       string 	`json:"expirymonth,omitempty"`
-	ExpiryYear        string 	`json:"expiryyear,omitempty"`
-	Country           string 	`json:"country,omitempty"`
-	BVN				  string 	`json:"bvn,omitempty"`
-	CardType		  Card		`json:"cardtype,omitempty"`
-	Pin               string 	`json:"pin,omitempty"`
-	Narration		  string	`json:"narration,omitempty"`
-	ResponseUrl		  string	`json:"responseurl,omitempty"`
-	Metadata          Metadata 	`json:"metadata,omitempty"`
+	Amount      float32  `json:"amount,omitempty"`
+	AuthModel   string   `json:"authmodel,omitempty"`
+	CardNumber  string   `json:"cardno,omitempty"`
+	CVV         string   `json:"cvv,omitempty"`
+	Currency    string   `json:"currency,omitempty"`
+	CustomerId  Customer `json:"custid,omitempty"`
+	ExpiryMonth string   `json:"expirymonth,omitempty"`
+	ExpiryYear  string   `json:"expiryyear,omitempty"`
+	Country     string   `json:"country,omitempty"`
+	BVN         string   `json:"bvn,omitempty"`
+	CardType    Card     `json:"cardtype,omitempty"`
+	Pin         string   `json:"pin,omitempty"`
+	Narration   string   `json:"narration,omitempty"`
+	ResponseUrl string   `json:"responseurl,omitempty"`
+	Metadata    Metadata `json:"metadata,omitempty"`
 }
 
-
 type ValidateRequest struct {
-	OTP							string		`json:"otp,omitempty"`
-	OTPTransactionIdentifier 	string 		`json:"otptransactionidentifier,omitempty"`
-
+	OTP                      string `json:"otp,omitempty"`
+	OTPTransactionIdentifier string `json:"otptransactionidentifier,omitempty"`
 }
 
 func (s *ChargeService) Create(req *ChargeRequest) (*Response, error) {
@@ -58,4 +56,3 @@ func (s *ChargeService) Validate(req *ValidateRequest) (*Response, error) {
 
 	return resp, err
 }
-

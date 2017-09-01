@@ -1,1 +1,1 @@
-package gocardless_pro_go
+package main

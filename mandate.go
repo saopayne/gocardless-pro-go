@@ -1,38 +1,39 @@
-package gocardless_pro_go
+package main
 
 import (
 	"fmt"
 	"net/url"
+	"encoding/json"
 )
 
 type MandateService service
 
 type Mandate struct {
-	ID							string				`json:"id,omitempty"`
-	CreatedAt					string				`json:"created_at,omitempty"`
-	Reference 					string				`json:"reference,omitempty"`
-	Scheme						string				`json:"scheme,omitempty"`
-	Status						Status				`json:"status,omitempty"`
-	PaymentsRequireApproval		bool				`json:"payments_require_approval,omitempty"`
-	NextPossibleChargeDate		string				`json:"next_possible_charge_date,omitempty"`
-	Links						[]MandateLink		`json:"links,omitempty"`
-	Metadata					map[string]string	`json:"metadata,omitempty"`
+	ID                      string            `json:"id,omitempty"`
+	CreatedAt               string            `json:"created_at,omitempty"`
+	Reference               string            `json:"reference,omitempty"`
+	Scheme                  string            `json:"scheme,omitempty"`
+	Status                  Status            `json:"status,omitempty"`
+	PaymentsRequireApproval bool              `json:"payments_require_approval,omitempty"`
+	NextPossibleChargeDate  string            `json:"next_possible_charge_date,omitempty"`
+	Links                   []MandateLink     `json:"links,omitempty"`
+	Metadata                map[string]string `json:"metadata,omitempty"`
 }
 
 type Status struct {
-	Status 	string	`json:"status,omitempty"`
+	Status string `json:"status,omitempty"`
 }
 
 type MandateListRequest struct {
-	CreatedAt 			CreatedAt	`json:"created_at,omitempty"`
-	Limit				int			`json:"limit,omitempty"`
-	Before				string		`json:"before,omitempty"`
-	After				string		`json:"after,omitempty"`
-	Creditor			string		`json:"creditor,omitempty"`
-	Customer			string		`json:"customer,omitempty"`
-	CustomerBankAccount string		`json:"customer_bank_account,omitempty"`
-	Reference			string		`json:"reference,omitempty"`
-	Status				string		`json:"status,omitempty"`
+	CreatedAt           CreatedAt `json:"created_at,omitempty"`
+	Limit               int       `json:"limit,omitempty"`
+	Before              string    `json:"before,omitempty"`
+	After               string    `json:"after,omitempty"`
+	Creditor            string    `json:"creditor,omitempty"`
+	Customer            string    `json:"customer,omitempty"`
+	CustomerBankAccount string    `json:"customer_bank_account,omitempty"`
+	Reference           string    `json:"reference,omitempty"`
+	Status              string    `json:"status,omitempty"`
 }
 
 // CustomerBankAccountList is a list object for customer bank accounts.
@@ -42,18 +43,16 @@ type MandateList struct {
 }
 
 type MandateCreateRequest struct {
-	Metadata			map[string]string		`json:"metadata,omitempty"`
-	Reference			string					`json:"reference,omitempty"`
-	Scheme				string					`json:"scheme,omitempty"`
-	AccountNumber		string					`json:"account_number,omitempty"`
-	Links				[]string				`json:"links,omitempty"`
-
+	Metadata      map[string]string `json:"metadata,omitempty"`
+	Reference     string            `json:"reference,omitempty"`
+	Scheme        string            `json:"scheme,omitempty"`
+	AccountNumber string            `json:"account_number,omitempty"`
+	Links         []string          `json:"links,omitempty"`
 }
 
 type MandateCancelRequest struct {
-	Identity 	string  	`json:"identity,omitempty"`
+	Identity string `json:"identity,omitempty"`
 }
-
 
 // Create creates a new mandate
 func (s *MandateService) CreateMandate(mandateReq *MandateCreateRequest) (*Mandate, error) {
@@ -90,7 +89,6 @@ func (s *MandateService) ListNMandates(count, offset int, req *MandateListReques
 	return mandates, err
 }
 
-
 func (s *MandateService) GetMandate(id string) (*Mandate, error) {
 	u := fmt.Sprintf("/mandates/%s", id)
 	mandate := &Mandate{}
@@ -99,21 +97,21 @@ func (s *MandateService) GetMandate(id string) (*Mandate, error) {
 	return mandate, err
 }
 
-
 func (s *MandateService) UpdateMandate(updatedMandate *Mandate, metadata map[string]string) (*Mandate, error) {
 	params := url.Values{}
-	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("mandates/%d", updatedMandate.ID)
+	metadataString, _ := json.Marshal(metadata)
+	params.Add("metadata", string(metadataString))
+	u := fmt.Sprintf("mandates/%s", updatedMandate.ID)
 	mandate := &Mandate{}
 	err := s.client.Call("PUT", u, params, mandate)
 
 	return mandate, err
 }
 
-
 func (s *MandateService) CancelMandate(mandateToCancel *Mandate, metadata map[string]string) (*Response, error) {
 	params := url.Values{}
-	params.Add("metadata", string(metadata))
+	metadataString, _ := json.Marshal(metadata)
+	params.Add("metadata", string(metadataString))
 	u := fmt.Sprintf("/mandates/%s/actions/cancel", mandateToCancel.ID)
 	resp := &Response{}
 	err := s.client.Call("POST", u, params, resp)
@@ -123,7 +121,8 @@ func (s *MandateService) CancelMandate(mandateToCancel *Mandate, metadata map[st
 
 func (s *MandateService) ReinstateMandate(mandateToReinstate *Mandate, metadata map[string]string) (*Response, error) {
 	params := url.Values{}
-	params.Add("metadata", string(metadata))
+	metadataString, _ := json.Marshal(metadata)
+	params.Add("metadata", string(metadataString))
 	u := fmt.Sprintf("/mandates/%s/actions/reinstate", mandateToReinstate.ID)
 	resp := &Response{}
 	err := s.client.Call("POST", u, params, resp)

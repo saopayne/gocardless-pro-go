@@ -1,31 +1,32 @@
-package gocardless_pro_go
+package main
 
 import (
 	"fmt"
 	"net/url"
+	"encoding/json"
 )
 
 type CustomerBankAccountService service
 
 type CustomerBankAccount struct {
-	Id        			string  					`json:"id,omitempty"`
-	BankName      		string  					`json:"bank_name,omitempty"`
-	CountryCode			string						`json:"country_code,omitempty"`
-	CreatedAt			string						`json:"created_at,omitempty"`
-	Currency			string 						`json:"currency,omitempty"`
-	AccountHolderName	string						`json:"account_holder_name,omitempty"`
-	AccountNumberEnding	string						`json:"account_number_ending,omitempty"`
-	Enabled				bool						`json:"enabled,omitempty"`
-	Links				[]CustomerLink				`json:"links,omitempty"`
-	Metadata			map[string]string			`json:"metadata,omitempty"`
-	ResponseUrl	  		string						`json:"responseurl,omitempty"`
+	Id                  string            `json:"id,omitempty"`
+	BankName            string            `json:"bank_name,omitempty"`
+	CountryCode         string            `json:"country_code,omitempty"`
+	CreatedAt           string            `json:"created_at,omitempty"`
+	Currency            string            `json:"currency,omitempty"`
+	AccountHolderName   string            `json:"account_holder_name,omitempty"`
+	AccountNumberEnding string            `json:"account_number_ending,omitempty"`
+	Enabled             bool              `json:"enabled,omitempty"`
+	Links               []CustomerLink    `json:"links,omitempty"`
+	Metadata            map[string]string `json:"metadata,omitempty"`
+	ResponseUrl         string            `json:"responseurl,omitempty"`
 }
 
 type CustomerBankListRequest struct {
-	CreatedAt 	CreatedAt		`json:"created_at,omitempty"`
-	Limit		int				`json:"limit,omitempty"`
-	Before		string			`json:"before,omitempty"`
-	After		string			`json:"after,omitempty"`
+	CreatedAt CreatedAt `json:"created_at,omitempty"`
+	Limit     int       `json:"limit,omitempty"`
+	Before    string    `json:"before,omitempty"`
+	After     string    `json:"after,omitempty"`
 }
 
 // CustomerBankAccountList is a list object for customer bank accounts.
@@ -35,23 +36,21 @@ type CustomerBankAccountList struct {
 }
 
 type CustomerBankAccountCreateRequest struct {
-	Iban				string						`json:"iban,omitempty"`
-	BankCode			string						`json:"bank_code,omitempty"`
-	BranchCode			string						`json:"branch_code,omitempty"`
-	CountryCode			string						`json:"country_code,omitempty"`
-	Currency			string 						`json:"currency,omitempty"`
-	AccountHolderName	string						`json:"account_holder_name,omitempty"`
-	AccountNumber		string						`json:"account_number,omitempty"`
-	Links				[]CustomerLink				`json:"links,omitempty"`
-	Metadata			map[string]string			`json:"metadata,omitempty"`
-	ResponseUrl	  		string						`json:"responseurl,omitempty"`
-	
+	Iban              string            `json:"iban,omitempty"`
+	BankCode          string            `json:"bank_code,omitempty"`
+	BranchCode        string            `json:"branch_code,omitempty"`
+	CountryCode       string            `json:"country_code,omitempty"`
+	Currency          string            `json:"currency,omitempty"`
+	AccountHolderName string            `json:"account_holder_name,omitempty"`
+	AccountNumber     string            `json:"account_number,omitempty"`
+	Links             []CustomerLink    `json:"links,omitempty"`
+	Metadata          map[string]string `json:"metadata,omitempty"`
+	ResponseUrl       string            `json:"responseurl,omitempty"`
 }
 
 type CustomerBankAccountDisableRequest struct {
-	Identity 	string  	`json:"identity,omitempty"`
+	Identity string `json:"identity,omitempty"`
 }
-
 
 // Create creates a new customer bank account
 func (s *CustomerBankAccountService) CreateCustomerBankAccount(bankAccount *CustomerBankAccountCreateRequest) (*CustomerBankAccount, error) {
@@ -96,17 +95,18 @@ func (s *CustomerBankAccountService) GetCustomerBankAccount(id string) (*Custome
 	return account, err
 }
 
-
 // Update updates a customer's properties.
 // For more details see https://developer.gocardless.com/api-reference/#customer-bank-accounts-update-a-customer-bank-account
-func (s *CustomerBankAccountService) Update(customerBankAccount *CustomerBankAccount) (*CustomerBankAccount, error) {
-	u := fmt.Sprintf("customer_bank_accounts/%d", customerBankAccount.Id)
+func (s *CustomerBankAccountService) Update(customerBankAccount *CustomerBankAccount, metadata map[string]string) (*CustomerBankAccount, error) {
+	u := fmt.Sprintf("customer_bank_accounts/%s", customerBankAccount.Id)
+	params := url.Values{}
+	metadataString, _ := json.Marshal(metadata)
+	params.Add("metadata", string(metadataString))
 	account := &CustomerBankAccount{}
-	err := s.client.Call("PUT", u, customerBankAccount, account)
+	err := s.client.Call("PUT", u, params, account)
 
 	return account, err
 }
-
 
 // Immediately disables the bank account, no money can be paid out to a disabled account.
 // https://developer.gocardless.com/api-reference/#customer-bank-accounts-disable-a-customer-bank-account

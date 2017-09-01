@@ -1,4 +1,4 @@
-package gocardless_pro_go
+package main
 
 import (
 	"fmt"
@@ -34,5 +34,3 @@ func (r *Error) GetErrors() string {
 func (r *Error) GetErrorURL() string {
 	return fmt.Sprintf("%v", r.URL)
 }
-
-

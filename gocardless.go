@@ -1,16 +1,16 @@
-package gocardless_pro_go
+package main
 
 import (
-	"time"
-	"net/url"
-	"encoding/json"
-	"net/http"
-	"os"
-	"log"
-	"io"
 	"bytes"
-	"io/ioutil"
+	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
+	"os"
+	"time"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -20,12 +20,48 @@ const (
 	version = "1.1"
 	// defaultHTTPTimeout is the default timeout on the http client
 	defaultHTTPTimeout = 40 * time.Second
-	baseURL = "https://api-sandbox.gocardless.com"
+	baseURL            = "https://api-sandbox.gocardless.com"
 	// User agent used when communicating with the Gocardless API.
-	userAgent = "gocardless-webhook-service/" + version
+	userAgent            = "gocardless-webhook-service/" + version
 	goCardlessApiVersion = "2015-07-06"
-	acceptJsonType = "application/json"
+	acceptJsonType       = "application/json"
 )
+
+func main() {
+	apiKey := "sandbox_o55p5OowBX59Rd8aDR7c_25LQdBTHRaACeVnqj0o"
+
+	// second param is an optional http client, allowing overriding of the HTTP client to use.
+	// This is useful if you're running in a Google AppEngine environment
+	// where the http.DefaultClient is not available.
+	client := NewClient(apiKey, nil)
+
+	cust := &Customer{
+		FamilyName:   "Oyewale",
+		GivenName:    "Ademola",
+		Email:        "user123@gmail.com",
+		PostalCode:   "34343",
+		City:         "Lagos",
+		AddressLine1: "Just somewhere on Earth",
+		AddressLine2: "Another place on Earth",
+		AddressLine3: "Just the third address to justify things",
+		Language:     "English",
+	}
+	// create the customer
+	customer, err := client.Customer.Create(cust)
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while creating a customer is :%s", err.Error())
+	}
+	fmt.Sprintf("The customer created is: %s ", string(customer.Email))
+
+	// Get customer by ID
+	customer, err = client.Customer.Get(string(customer.ID))
+	if err != nil {
+		fmt.Sprintf("The error while getting a customer is :%s", err.Error())
+	}
+	fmt.Sprintf("The customer retrieved with ID: %d is : %s", customer.ID, customer.Email)
+
+}
 
 type service struct {
 	client *Client
@@ -33,31 +69,30 @@ type service struct {
 
 // Client manages communication with the GoCardless API
 type Client struct {
-	common 	service      // Reuse a single struct instead of allocating one for each service on the heap.
-	client 	*http.Client // HTTP client used to communicate with the API.
+	common service      // Reuse a single struct instead of allocating one for each service on the heap.
+	client *http.Client // HTTP client used to communicate with the API.
 	// the API Key used to authenticate all GoCardless API requests
-	key 	string
-	secret 	string // don't know if this is necessary though
+	key     string
+	secret  string // don't know if this is necessary though
 	baseURL *url.URL
-	logger 	Logger
+	logger  Logger
 
-	BankDetailsLookup		*BankDetailsLookupService
-	Creditor				*CreditorService
-	CreditorBankAccount		*CreditorBankAccountService
-	Customer     			*CustomerService
-	CustomerBankAccount		*CustomerBankAccountService
-	Event					*EventService
-	Mandate					*RedirectFlowService
-	MandatePdf				*MandatePdfService
-	Payout					*PayoutService
-	Payment					*PaymentService
-	RedirectFlow			*RedirectFlowService
-	Refund					*RefundService
-	Subscription			*SubscriptionService
-	LoggingEnabled 			bool
-	Logger         			Logger
+	BankDetailsLookup   *BankDetailsLookupService
+	Creditor            *CreditorService
+	CreditorBankAccount *CreditorBankAccountService
+	Customer            *CustomerService
+	CustomerBankAccount *CustomerBankAccountService
+	Event               *EventService
+	Mandate             *RedirectFlowService
+	MandatePdf          *MandatePdfService
+	Payout              *PayoutService
+	Payment             *PaymentService
+	RedirectFlow        *RedirectFlowService
+	Refund              *RefundService
+	Subscription        *SubscriptionService
+	LoggingEnabled      bool
+	Logger              Logger
 }
-
 
 type Logger interface {
 	Printf(format string, v ...interface{})
@@ -86,7 +121,6 @@ type ListMeta struct {
 	Page      int `json:"page"`
 	PageCount int `json:"pageCount"`
 }
-
 
 // NewClient creates a new GoCardless API client with the given API key
 // and HTTP client, allowing overriding of the HTTP client to use.
@@ -139,7 +173,7 @@ func (c *Client) Call(method, path string, body, v interface{}) error {
 	req.Header.Set("Authorization", "Bearer "+c.key)
 	// this header sets the api version
 	req.Header.Set("GoCardless-Version", goCardlessApiVersion)
-	req.Header.Set("Accept", acceptJsonType )
+	req.Header.Set("Accept", acceptJsonType)
 
 	if ua := req.Header.Get("User-Agent"); ua == "" {
 		req.Header.Set("User-Agent", userAgent)
@@ -266,4 +300,3 @@ func checkResponse(respMap Response, v interface{}) error {
 	// response data does not contain data node, return anyways
 	return mapstruct(respMap, v)
 }
-

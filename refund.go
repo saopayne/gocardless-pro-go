@@ -1,28 +1,29 @@
-package gocardless_pro_go
+package main
 
 import (
 	"fmt"
 	"net/url"
+	"encoding/json"
 )
 
 type RefundService service
 
 type Refund struct {
-	ID        string                `json:"id,omitempty"`
-	CreatedAt string                `json:"created_at,omitempty"`
-	Reference string                `json:"reference,omitempty"`
-	Currency  string                `json:"currency,omitempty"`
-	Amount    int64                 `json:"amount,omitempty"`
-	Links     []RefundLink          `json:"links,omitempty"`
-	Metadata  map[string]string     `json:"metadata,omitempty"`
+	ID        string            `json:"id,omitempty"`
+	CreatedAt string            `json:"created_at,omitempty"`
+	Reference string            `json:"reference,omitempty"`
+	Currency  string            `json:"currency,omitempty"`
+	Amount    int64             `json:"amount,omitempty"`
+	Links     []RefundLink      `json:"links,omitempty"`
+	Metadata  map[string]string `json:"metadata,omitempty"`
 }
 
 type RefundListRequest struct {
-	CreatedAt CreatedAt     `json:"created_at,omitempty"`
-	Limit     int           `json:"limit,omitempty"`
-	Before    string        `json:"before,omitempty"`
-	After     string        `json:"after,omitempty"`
-	Payment   string        `json:"payment,omitempty"`
+	CreatedAt CreatedAt `json:"created_at,omitempty"`
+	Limit     int       `json:"limit,omitempty"`
+	Before    string    `json:"before,omitempty"`
+	After     string    `json:"after,omitempty"`
+	Payment   string    `json:"payment,omitempty"`
 }
 
 type RefundList struct {
@@ -31,11 +32,11 @@ type RefundList struct {
 }
 
 type RefundCreateRequest struct {
-	Metadata                map[string]string       `json:"metadata,omitempty"`
-	Reference               string                  `json:"reference,omitempty"`
-	Amount                  string                  `json:"amount,omitempty"`
-	TotalAmountConfirmation string                  `json:"total_amount_confirmation,omitempty"`
-	Links                   []string                `json:"links,omitempty"`
+	Metadata                map[string]string `json:"metadata,omitempty"`
+	Reference               string            `json:"reference,omitempty"`
+	Amount                  string            `json:"amount,omitempty"`
+	TotalAmountConfirmation string            `json:"total_amount_confirmation,omitempty"`
+	Links                   []string          `json:"links,omitempty"`
 }
 
 // Create creates a new refund
@@ -73,15 +74,16 @@ func (s *RefundService) ListNRefunds(count, offset int, req *RefundListRequest) 
 func (s *RefundService) GetRefund(id string) (*Refund, error) {
 	u := fmt.Sprintf("/refunds/%s", id)
 	refund := &Refund{}
-	err := s.client.Call("GET", u, nil, payment)
+	err := s.client.Call("GET", u, nil, refund)
 
 	return refund, err
 }
 
 func (s *RefundService) UpdateRefund(updatedRefund *Refund, metadata map[string]string) (*Refund, error) {
 	params := url.Values{}
-	params.Add("metadata", string(metadata))
-	u := fmt.Sprintf("/refunds/%d", updatedRefund.ID)
+	metadataString, _ := json.Marshal(metadata)
+	params.Add("metadata", string(metadataString))
+	u := fmt.Sprintf("/refunds/%s", updatedRefund.ID)
 	refund := &Refund{}
 	err := s.client.Call("PUT", u, params, refund)
 
