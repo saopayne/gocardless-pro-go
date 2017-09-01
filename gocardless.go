@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/mitchellh/mapstructure"
+	"strings"
 )
 
 const (
@@ -39,27 +40,31 @@ func main() {
 		FamilyName:   "Oyewale",
 		GivenName:    "Ademola",
 		Email:        "user123@gmail.com",
-		PostalCode:   "34343",
-		City:         "Lagos",
+		PostalCode:   "E2 8DP",
+		CountryCode:  "GB",
+		City:         "Changed to Enugu",
 		AddressLine1: "Just somewhere on Earth",
-		AddressLine2: "Another place on Earth",
-		AddressLine3: "Just the third address to justify things",
-		Language:     "English",
+		Language:     "en",
 	}
-	// create the customer
-	customer, err := client.Customer.Create(cust)
+	// update the customer
+	client.LoggingEnabled = true
+	customer, err := client.Customer.Update(cust)
 	if err != nil {
 		// do something with error
 		fmt.Sprintf("The error while creating a customer is :%s", err.Error())
 	}
 	fmt.Sprintf("The customer created is: %s ", string(customer.Email))
 
-	// Get customer by ID
-	customer, err = client.Customer.Get(string(customer.ID))
-	if err != nil {
-		fmt.Sprintf("The error while getting a customer is :%s", err.Error())
+	customerListReq := &CustomerListRequest{
+		Limit: 10,
+		CreatedAt: CreatedAt{},
 	}
-	fmt.Sprintf("The customer retrieved with ID: %d is : %s", customer.ID, customer.Email)
+	customerList, err := client.Customer.ListN(10, 2, customerListReq)
+
+	if err != nil {
+		fmt.Sprintf("The error while getting the list of customers is :%s", err.Error())
+	}
+	fmt.Sprintf("The customer list is : %s", customerList)
 
 }
 
@@ -146,7 +151,7 @@ func NewClient(key string, httpClient *http.Client) *Client {
 	return c
 }
 
-// s.client.Call("POST", "/v1/", PlanRequest{}, &plan)
+
 func (c *Client) Call(method, path string, body, v interface{}) error {
 	var buf io.ReadWriter
 	if body != nil {
@@ -207,9 +212,9 @@ func (c *Client) Call(method, path string, body, v interface{}) error {
 
 	var respMap Response
 	json.Unmarshal(respBody, &respMap)
-	// fmt.Printf("RESPONSE %s \n %+v", u, respMap)
+	fmt.Printf("RESPONSE %s \n %+v", u, string(respBody[:]))
 
-	if status, _ := respMap["status"].(bool); !status && resp.StatusCode >= 400 {
+	if strings.Contains(resp.Status, "20") && resp.StatusCode >= 400 {
 		if c.LoggingEnabled {
 			c.Logger.Printf("GoCardless error: %v\n", err)
 		}

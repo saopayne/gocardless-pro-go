@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"encoding/json"
 )
 
 type CreditorService service
@@ -83,7 +84,14 @@ type CreditorUpdateRequest struct {
 func (s *CreditorService) Create(creditor *Creditor) (*Creditor, error) {
 	u := fmt.Sprintf("/creditors")
 	crd := &Creditor{}
-	err := s.client.Call("POST", u, creditor, crd)
+	rel := map[string]interface{}{
+		"creditors": creditor,
+	}
+	custJson, _ := json.Marshal(rel)
+	creditorObject := string(custJson[:])
+	fmt.Println(creditorObject)
+
+	err := s.client.Call("POST", u, creditorObject, crd)
 
 	return crd, err
 }
@@ -109,8 +117,8 @@ func (s *CreditorService) ListN(count, offset int, req *CreditorListRequest) (*C
 
 // Get:: returns the details of an existing creditor.
 // https://developer.gocardless.com/api-reference/#creditors-get-a-single-creditor
-func (s *CreditorService) Get(id int) (*Creditor, error) {
-	u := fmt.Sprintf("/creditors/%d", id)
+func (s *CreditorService) Get(id string) (*Creditor, error) {
+	u := fmt.Sprintf("/creditors/%s", id)
 	sub := &Creditor{}
 	err := s.client.Call("GET", u, nil, sub)
 
@@ -119,7 +127,7 @@ func (s *CreditorService) Get(id int) (*Creditor, error) {
 
 // Update updates a creditor's properties.
 func (s *CreditorService) Update(creditor *Creditor) (*Creditor, error) {
-	u := fmt.Sprintf("creditors/%s", creditor.Id)
+	u := fmt.Sprintf("/creditors/%s", creditor.Id)
 	sub := &Creditor{}
 	err := s.client.Call("PUT", u, creditor, sub)
 

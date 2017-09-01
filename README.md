@@ -22,7 +22,39 @@ go get 'https://github.com/saopayne/gocardless-pro-go'
 ``` go
 import "https://github.com/saopayne/gocardless-pro-go"
 
-client = gocardless.NewClient(apiKey)
+apiKey := "sandbox_o55p5OowBX59Rd8aDR7c_25LQdBTHRaACeVnqj0o"
+
+	client := NewClient(apiKey, nil)
+
+	cust := &Customer{
+		FamilyName:   "Oyewale",
+		GivenName:    "Ademola",
+		Email:        "user123@gmail.com",
+		PostalCode:   "E2 8DP",
+		CountryCode:  "GB",
+		City:         "Lagos",
+		AddressLine1: "Just somewhere on Earth",
+		AddressLine2: "Another place on Earth",
+		AddressLine3: "Just the third address to justify things",
+		Language:     "en",
+	}
+
+	// create the customer
+	client.LoggingEnabled = true
+	customer, err := client.Customer.Create(cust)
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while creating a customer is :%s", err.Error())
+	}
+	fmt.Sprintf("The customer created is: %s ", string(customer.Email))
+
+	// Get customer by ID
+	customer, err = client.Customer.Get(customer.ID)
+	if err != nil {
+		fmt.Sprintf("The error while getting a customer is :%s", err.Error())
+	}
+	fmt.Sprintf("The customer retrieved with ID: %d is : %s", customer.ID, customer.Email)
+
 
 ```
 
