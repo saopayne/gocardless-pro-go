@@ -17,12 +17,12 @@ import (
 
 const (
 	// library version
-	version = "0.1.0"
+	version = "1.1"
 	// defaultHTTPTimeout is the default timeout on the http client
 	defaultHTTPTimeout = 40 * time.Second
 	baseURL = "https://api-sandbox.gocardless.com"
 	// User agent used when communicating with the Gocardless API.
-	userAgent = "gocardless-go/" + version
+	userAgent = "gocardless-webhook-service/" + version
 	goCardlessApiVersion = "2015-07-06"
 	acceptJsonType = "application/json"
 )
