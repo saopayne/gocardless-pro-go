@@ -20,9 +20,11 @@ const (
 	version = "0.1.0"
 	// defaultHTTPTimeout is the default timeout on the http client
 	defaultHTTPTimeout = 40 * time.Second
-	baseURL = "https://api.gocardless.com"
+	baseURL = "https://api-sandbox.gocardless.com"
 	// User agent used when communicating with the Gocardless API.
 	userAgent = "gocardless-go/" + version
+	goCardlessApiVersion = "2015-07-06"
+	acceptJsonType = "application/json"
 )
 
 type service struct {
@@ -44,7 +46,12 @@ type Client struct {
 	CreditorBankAccount		*CreditorBankAccountService
 	Customer     			*CustomerService
 	CustomerBankAccount		*CustomerBankAccountService
+	Event					*EventService
 	Mandate					*RedirectFlowService
+	MandatePdf				*MandatePdfService
+	Payout					*PayoutService
+	Payment					*PaymentService
+	RedirectFlow			*RedirectFlowService
 	Refund					*RefundService
 	Subscription			*SubscriptionService
 	LoggingEnabled 			bool
@@ -128,7 +135,12 @@ func (c *Client) Call(method, path string, body, v interface{}) error {
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
+
 	req.Header.Set("Authorization", "Bearer "+c.key)
+	// this header sets the api version
+	req.Header.Set("GoCardless-Version", goCardlessApiVersion)
+	req.Header.Set("Accept", acceptJsonType )
+
 	if ua := req.Header.Get("User-Agent"); ua == "" {
 		req.Header.Set("User-Agent", userAgent)
 	} else {
