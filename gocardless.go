@@ -29,95 +29,48 @@ const (
 )
 
 func main() {
+
 	apiKey := "sandbox_o55p5OowBX59Rd8aDR7c_25LQdBTHRaACeVnqj0o"
 
-	// second param is an optional http client, allowing overriding of the HTTP client to use.
-	// This is useful if you're running in a Google AppEngine environment
-	// where the http.DefaultClient is not available.
-	//client := NewClient(apiKey, nil)
-	//
-	//acct := &CustomerBankAccountCreateRequest{
-	//	BankCode:      "Oyewale",
-	//	Currency:      "PND",
-	//	BranchCode:    "LEI",
-	//	AccountNumber: "03434",
-	//	CountryCode:   "GB",
-	//}
-	//// create a customer bank account
-	//client.LoggingEnabled = true
-	//account, err := client.CustomerBankAccount.CreateCustomerBankAccount(acct)
-	//if err != nil {
-	//	// do something with error
-	//	fmt.Sprintf("The error while creating a customer bank account is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The customer bank account created is: %s ", account.BankName)
-	//
-	//// Get customer bank Account by ID
-	//account, err = client.CustomerBankAccount.GetCustomerBankAccount(account.Id)
-	//if err != nil {
-	//	fmt.Sprintf("The error while getting a customer bank account is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The customer bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
-	//
-	//custBankAccountUpdate := &CustomerBankAccount{
+	 //second param is an optional http client, allowing overriding of the HTTP client to use.
+	 //This is useful if you're running in a Google AppEngine environment
+	 //where the http.DefaultClient is not available.
+	client := NewClient(apiKey, nil)
+
+	acct := &CreditorBankAccountCreateRequest{
+		BankCode:      "Oyewale",
+		Currency:      "PND",
+		BranchCode:    "LEI",
+		AccountNumber: "03434",
+		CountryCode:   "GB",
+	}
+	// create a creditor bank account
+	client.LoggingEnabled = true
+	account, err := client.CreditorBankAccount.CreateCreditorBankAccount(acct)
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while creating a creditor bank account is :%s", err.Error())
+	}
+	fmt.Sprintf("The creditor bank account created is: %s ", account.BankName)
+
+	// Get creditor bank Account by ID
+	account, err = client.CreditorBankAccount.GetCreditorBankAccount(account.Id)
+	if err != nil {
+		fmt.Sprintf("The error while getting a creditor bank account is :%s", err.Error())
+	}
+	fmt.Sprintf("The creditor bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
+
+	//custBankAccountUpdate := &CreditorBankAccount{
 	//	BankName:          "Oyewale",
 	//	AccountHolderName: "Ademola",
 	//	CountryCode:       "GB",
 	//}
-	//account, err = client.CustomerBankAccount.UpdateCustomerBankAccount(custBankAccountUpdate, make(map[string]string))
+	//account, err = client.CreditorBankAccount.Update(custBankAccountUpdate, make(map[string]string))
 	//if err != nil {
 	//	// do something with error
 	//	fmt.Sprintf("The error while updating a customer bank account is :%s", err.Error())
 	//}
 	//fmt.Sprintf("The customer bank account updated is: %s ", account.BankName)
-
-	client := NewClient(apiKey, nil)
-
-	cust := &Creditor{
-		Name:   "Oyewale",
-		PostalCode:   "E2 8DP",
-		CountryCode:  "GB",
-		City:         "Lagos",
-		AddressLine1: "Just somewhere on Earth",
-		AddressLine2: "Another place on Earth",
-		AddressLine3: "Just the third address to justify things",
-	}
-
-	// create the customer
-	client.LoggingEnabled = true
-	customer, err := client.Creditor.CreateCreditor(cust)
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while creating a creditor is :%s", err.Error())
-	}
-	fmt.Sprintf("The creditor created is: %s ", string(customer.Name))
-
-	// Get customer by ID
-	customer, err = client.Creditor.GetCreditor(customer.Id)
-	if err != nil {
-		fmt.Sprintf("The error while getting a creditor is :%s", err.Error())
-	}
-	fmt.Sprintf("The creditor retrieved with ID: %d is : %s", customer.Id, customer.Name)
-
-	creditorUpdated := &Creditor{
-		Name:   	"Oyewale Sao",
-		PostalCode:   "E2 8DP",
-		CountryCode:  "GB",
-		City:         "Lagos",
-		AddressLine1: "Just somewhere on Earth",
-		AddressLine2: "Another place on Earth",
-		AddressLine3: "Just the third address to justify things",
-	}
-
-	// create the customer
-	client.LoggingEnabled = true
-	customer, err = client.Creditor.UpdateCreditor(creditorUpdated)
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while updating a creditor is :%s", err.Error())
-	}
-	fmt.Sprintf("The creditor updated is: %s ", string(customer.Name))
-
 
 }
 
@@ -220,9 +173,7 @@ func NewClient(key string, httpClient *http.Client) *Client {
 
 func (c *Client) Call(method string, path string, body, v interface{}) error {
 	var buf io.ReadWriter
-	fmt.Println("The call method is being called")
 	if body != nil {
-		fmt.Println("The body is not nil and encoding")
 		buf = new(bytes.Buffer)
 		err := json.NewEncoder(buf).Encode(body)
 		if err != nil {

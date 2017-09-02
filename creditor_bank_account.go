@@ -57,7 +57,10 @@ type CreditorBankAccount struct {
 func (s *CreditorBankAccountService) CreateCreditorBankAccount(bankAccount *CreditorBankAccountCreateRequest) (*CreditorBankAccount, error) {
 	u := fmt.Sprintf("/creditor_bank_accounts")
 	account := &CreditorBankAccount{}
-	err := s.client.Call("POST", u, bankAccount, account)
+	rel := map[string]interface{}{
+		"creditor_bank_accounts": bankAccount,
+	}
+	err := s.client.Call("POST", u, rel, account)
 
 	return account, err
 }
