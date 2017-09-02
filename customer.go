@@ -72,17 +72,15 @@ func (s *CustomerService) Create(customer *Customer) (*Customer, error) {
 	rel := map[string]interface{}{
 		"customers": customer,
 	}
-	//custReq := &CustomerEnvelope{Customers: customer}
 	custJson, _ := json.Marshal(rel)
-
 	customerObject := string(custJson[:])
-	fmt.Println(customerObject)
+	fmt.Sprintf("Making request with the params %s",customerObject)
 	err := s.client.Call("POST", u, rel, cust)
 
 	return cust, err
 }
 
-// Update updates a customer's properties.
+// Update a customer's properties.
 // For more details see https://developer.gocardless.com/api-reference/#customers-update-a-customer
 func (s *CustomerService) Update(customer *Customer) (*Customer, error) {
 	u := fmt.Sprintf("/customers/%s", customer.ID)

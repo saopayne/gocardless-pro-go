@@ -32,7 +32,7 @@ type Creditor struct {
 	Links              []string `json:"links,omitempty"`
 	SchemeIdentifiers  []string `json:"scheme_identifiers,omitempty"`
 	ResponseUrl        string   `json:"responseurl,omitempty"`
-	Metadata           Metadata `json:"metadata,omitempty"`
+	Metadata           map[string]string `json:"metadata,omitempty"`
 }
 
 type CreditorCreateRequest struct {
@@ -81,26 +81,27 @@ type CreditorUpdateRequest struct {
 
 // creates a new creditor
 // https://developer.gocardless.com/api-reference/#creditors-create-a-creditor
-func (s *CreditorService) Create(creditor *Creditor) (*Creditor, error) {
+func (c *CreditorService) CreateCreditor(creditor *Creditor) (*Creditor, error) {
 	u := fmt.Sprintf("/creditors")
 	crd := &Creditor{}
 	rel := map[string]interface{}{
 		"creditors": creditor,
 	}
+
 	custJson, _ := json.Marshal(rel)
 	creditorObject := string(custJson[:])
 	fmt.Println(creditorObject)
 
-	err := s.client.Call("POST", u, creditorObject, crd)
+	err := c.client.Call("POST", u, rel, crd)
 
 	return crd, err
 }
 
-func (s *CreditorService) List(req *CreditorListRequest) (*CreditorList, error) {
-	return s.ListN(100, 10, req)
+func (s *CreditorService) ListCreditors(req *CreditorListRequest) (*CreditorList, error) {
+	return s.ListNCreditors(100, 10, req)
 }
 
-func (s *CreditorService) ListN(count, offset int, req *CreditorListRequest) (*CreditorList, error) {
+func (s *CreditorService) ListNCreditors(count, offset int, req *CreditorListRequest) (*CreditorList, error) {
 	params := url.Values{}
 	params.Add("after", req.After)
 	params.Add("before", req.Before)
@@ -112,12 +113,13 @@ func (s *CreditorService) ListN(count, offset int, req *CreditorListRequest) (*C
 	u := paginateURL("/creditors", count, offset)
 	sub := &CreditorList{}
 	err := s.client.Call("GET", u, params, sub)
+
 	return sub, err
 }
 
 // Get:: returns the details of an existing creditor.
 // https://developer.gocardless.com/api-reference/#creditors-get-a-single-creditor
-func (s *CreditorService) Get(id string) (*Creditor, error) {
+func (s *CreditorService) GetCreditor(id string) (*Creditor, error) {
 	u := fmt.Sprintf("/creditors/%s", id)
 	sub := &Creditor{}
 	err := s.client.Call("GET", u, nil, sub)
@@ -126,10 +128,13 @@ func (s *CreditorService) Get(id string) (*Creditor, error) {
 }
 
 // Update updates a creditor's properties.
-func (s *CreditorService) Update(creditor *Creditor) (*Creditor, error) {
+func (s *CreditorService) UpdateCreditor(creditor *Creditor) (*Creditor, error) {
 	u := fmt.Sprintf("/creditors/%s", creditor.Id)
 	sub := &Creditor{}
-	err := s.client.Call("PUT", u, creditor, sub)
+	rel := map[string]interface{}{
+		"creditors": creditor,
+	}
+	err := s.client.Call("PUT", u, rel, sub)
 
 	return sub, err
 }

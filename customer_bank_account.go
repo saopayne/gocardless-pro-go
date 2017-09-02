@@ -54,10 +54,24 @@ type CustomerBankAccountDisableRequest struct {
 
 // Create creates a new customer bank account
 func (s *CustomerBankAccountService) CreateCustomerBankAccount(bankAccount *CustomerBankAccountCreateRequest) (*CustomerBankAccount, error) {
+		// do something with error
+	fmt.Sprintf("The error while creating a customer bank account is :%s", "About to create")
+
 	u := fmt.Sprintf("/customer_bank_accounts")
 	account := &CustomerBankAccount{}
-	err := s.client.Call("POST", u, bankAccount, account)
-
+	rel := map[string]interface{}{
+		"customer_bank_accounts": bankAccount,
+	}
+	custJson, _ := json.Marshal(rel)
+	customerObject := string(custJson[:])
+	fmt.Sprintf("Making the request with params %s", customerObject)
+	if rel == nil {
+		fmt.Println("Rubbish call")
+	}
+	err := s.client.Call("POST", u, rel, account)
+	if err != nil {
+		fmt.Println("Successful call")
+	}
 	return account, err
 }
 
@@ -97,13 +111,17 @@ func (s *CustomerBankAccountService) GetCustomerBankAccount(id string) (*Custome
 
 // Update updates a customer's properties.
 // For more details see https://developer.gocardless.com/api-reference/#customer-bank-accounts-update-a-customer-bank-account
-func (s *CustomerBankAccountService) Update(customerBankAccount *CustomerBankAccount, metadata map[string]string) (*CustomerBankAccount, error) {
+func (s *CustomerBankAccountService) UpdateCustomerBankAccount(customerBankAccount *CustomerBankAccount, metadata map[string]string) (*CustomerBankAccount, error) {
 	u := fmt.Sprintf("customer_bank_accounts/%s", customerBankAccount.Id)
 	params := url.Values{}
 	metadataString, _ := json.Marshal(metadata)
+	customerBankAccount.Metadata = metadata
+	rel := map[string]interface{}{
+		"customer_bank_accounts": customerBankAccount,
+	}
 	params.Add("metadata", string(metadataString))
 	account := &CustomerBankAccount{}
-	err := s.client.Call("PUT", u, params, account)
+	err := s.client.Call("PUT", u, rel, account)
 
 	return account, err
 }
