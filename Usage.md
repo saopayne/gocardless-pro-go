@@ -1,40 +1,40 @@
-##### This is comprehensive usage document for this library
+#### This is comprehensive usage document for this library
 
 ##### 1. Customers
 
 * Request
 ```go
 
-    client := NewClient(apiKey, nil)
-	cust := &Customer{
-		FamilyName:   "Oyewale",
-		GivenName:    "Ademola",
-		Email:        "user123@gmail.com",
-		PostalCode:   "E2 8DP",
-		CountryCode:  "GB",
-		City:         "Lagos",
-		AddressLine1: "Just somewhere on Earth",
-		AddressLine2: "Another place on Earth",
-		AddressLine3: "Just the third address to justify things",
-		Language:     "en",
-	}
+client := NewClient(apiKey, nil)
+cust := &Customer{
+    FamilyName:   "Oyewale",
+    GivenName:    "Ademola",
+    Email:        "user123@gmail.com",
+    PostalCode:   "E2 8DP",
+    CountryCode:  "GB",
+    City:         "Lagos",
+    AddressLine1: "Just somewhere on Earth",
+    AddressLine2: "Another place on Earth",
+    AddressLine3: "Just the third address to justify things",
+    Language:     "en",
+}
 
-	// create the customer
-	client.LoggingEnabled = true
-	customer, err := client.Customer.Create(cust)
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while creating a customer is :%s", err.Error())
-	}
-	fmt.Sprintf("The customer created is: %s ", string(customer.Email))
+// create the customer
+client.LoggingEnabled = true
+customer, err := client.Customer.Create(cust)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a customer is :%s", err.Error())
+}
+fmt.Sprintf("The customer created is: %s ", string(customer.Email))
 
-	// Get customer by ID
-	customer, err = client.Customer.Get(customer.ID)
-	if err != nil {
-		fmt.Sprintf("The error while getting a customer is :%s", err.Error())
-	}
+// Get customer by ID
+customer, err = client.Customer.Get(customer.ID)
+if err != nil {
+    fmt.Sprintf("The error while getting a customer is :%s", err.Error())
+}
 
-	fmt.Sprintf("The customer retrieved with ID: %d is : %s", customer.ID, customer.Email)
+fmt.Sprintf("The customer retrieved with ID: %d is : %s", customer.ID, customer.Email)
 ```
 * Response
 ```json
@@ -51,54 +51,54 @@
 
 * Request
 ```go
-    client := NewClient(apiKey, nil)
+client := NewClient(apiKey, nil)
 
-    cust := &Creditor{
-        Name:   "Oyewale",
-        PostalCode:   "E2 8DP",
-        CountryCode:  "GB",
-        City:         "Lagos",
-        AddressLine1: "Just somewhere on Earth",
-        AddressLine2: "Another place on Earth",
-        AddressLine3: "Just the third address to justify things",
-    }
+cust := &Creditor{
+    Name:   "Oyewale",
+    PostalCode:   "E2 8DP",
+    CountryCode:  "GB",
+    City:         "Lagos",
+    AddressLine1: "Just somewhere on Earth",
+    AddressLine2: "Another place on Earth",
+    AddressLine3: "Just the third address to justify things",
+}
 
-    // create the customer
-    client.LoggingEnabled = true
-    customer, err := client.Creditor.CreateCreditor(cust)
-    if err != nil {
-        // do something with error
-        fmt.Sprintf("The error while creating a creditor is :%s", err.Error())
-    }
-    fmt.Sprintf("The creditor created is: %s ", string(customer.Name))
+// create the customer
+client.LoggingEnabled = true
+customer, err := client.Creditor.CreateCreditor(cust)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a creditor is :%s", err.Error())
+}
+fmt.Sprintf("The creditor created is: %s ", string(customer.Name))
 
-    // Get customer by ID
-    customer, err = client.Creditor.GetCreditor(customer.Id)
-    if err != nil {
-        fmt.Sprintf("The error while getting a creditor is :%s", err.Error())
-    }
-    fmt.Sprintf("The creditor retrieved with ID: %d is : %s", customer.Id, customer.Name)
+// Get customer by ID
+customer, err = client.Creditor.GetCreditor(customer.Id)
+if err != nil {
+    fmt.Sprintf("The error while getting a creditor is :%s", err.Error())
+}
+fmt.Sprintf("The creditor retrieved with ID: %d is : %s", customer.Id, customer.Name)
 
-    creditorUpdated := &Creditor{
-        Id:		customer.Id,
-        Name:   	"Oyewale Sao",
-        PostalCode:   "E2 8DP",
-        CountryCode:  "GB",
-        City:         "Lagos",
-        AddressLine1: "Just somewhere on Earth",
-        AddressLine2: "Another place on Earth",
-        AddressLine3: "Just the third address to justify things",
-    }
+creditorUpdated := &Creditor{
+    Id:		customer.Id,
+    Name:   	"Oyewale Sao",
+    PostalCode:   "E2 8DP",
+    CountryCode:  "GB",
+    City:         "Lagos",
+    AddressLine1: "Just somewhere on Earth",
+    AddressLine2: "Another place on Earth",
+    AddressLine3: "Just the third address to justify things",
+}
 
-    // create the customer
-    client.LoggingEnabled = true
-    customer, err = client.Creditor.UpdateCreditor(creditorUpdated)
-    if err != nil {
-        // do something with error
-        fmt.Sprintf("The error while updating a creditor is :%s", err.Error())
-    }
+// create the customer
+client.LoggingEnabled = true
+customer, err = client.Creditor.UpdateCreditor(creditorUpdated)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while updating a creditor is :%s", err.Error())
+}
 
-    fmt.Sprintf("The creditor updated is: %s ", string(customer.Name))
+fmt.Sprintf("The creditor updated is: %s ", string(customer.Name))
 ```
 
 ##### 3. Customer Bank Account
@@ -106,47 +106,47 @@
 * Making the Request
 
 ```go
-    client := NewClient(apiKey, nil)
+client := NewClient(apiKey, nil)
 
-    acct := &CustomerBankAccountCreateRequest{
-        BankCode:      "Oyewale",
-        Currency:      "PND",
-        BranchCode:    "LEI",
-        AccountNumber: "03434",
-        CountryCode:   "GB",
-    }
+acct := &CustomerBankAccountCreateRequest{
+    BankCode:      "Oyewale",
+    Currency:      "PND",
+    BranchCode:    "LEI",
+    AccountNumber: "03434",
+    CountryCode:   "GB",
+}
 
-    // create a customer bank account
-    client.LoggingEnabled = true
-    account, err := client.CustomerBankAccount.CreateCustomerBankAccount(acct)
-    if err != nil {
-        // do something with error
-        fmt.Sprintf("The error while creating a customer bank account is :%s", err.Error())
-    }
+// create a customer bank account
+client.LoggingEnabled = true
+account, err := client.CustomerBankAccount.CreateCustomerBankAccount(acct)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a customer bank account is :%s", err.Error())
+}
 
-    fmt.Sprintf("The customer bank account created is: %s ", account.BankName)
+fmt.Sprintf("The customer bank account created is: %s ", account.BankName)
 
-    // Get customer bank Account by ID
-    account, err = client.CustomerBankAccount.GetCustomerBankAccount(account.Id)
-    if err != nil {
-        fmt.Sprintf("The error while getting a customer bank account is :%s", err.Error())
-    }
+// Get customer bank Account by ID
+account, err = client.CustomerBankAccount.GetCustomerBankAccount(account.Id)
+if err != nil {
+    fmt.Sprintf("The error while getting a customer bank account is :%s", err.Error())
+}
 
-    fmt.Sprintf("The customer bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
+fmt.Sprintf("The customer bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
 
-    custBankAccountUpdate := &CustomerBankAccount{
-        BankName:          "Oyewale",
-        AccountHolderName: "Ademola",
-        CountryCode:       "GB",
-    }
+custBankAccountUpdate := &CustomerBankAccount{
+    BankName:          "Oyewale",
+    AccountHolderName: "Ademola",
+    CountryCode:       "GB",
+}
 
-    account, err = client.CustomerBankAccount.UpdateCustomerBankAccount(custBankAccountUpdate, make(map[string]string))
-    if err != nil {
-        // do something with error
-        fmt.Sprintf("The error while updating a customer bank account is :%s", err.Error())
-    }
+account, err = client.CustomerBankAccount.UpdateCustomerBankAccount(custBankAccountUpdate, make(map[string]string))
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while updating a customer bank account is :%s", err.Error())
+}
 
-    fmt.Sprintf("The customer bank account updated is: %s ", account.BankName)
+fmt.Sprintf("The customer bank account updated is: %s ", account.BankName)
 ```
 
 ##### 4. Creditor Bank Account
@@ -154,31 +154,60 @@
 * Making request
 
 ```go
-    client := NewClient(apiKey, nil)
+client := NewClient(apiKey, nil)
 
-    acct := &CreditorBankAccountCreateRequest{
-        BankCode:      "Oyewale",
-        Currency:      "PND",
-        BranchCode:    "LEI",
-        AccountNumber: "03434",
-        CountryCode:   "GB",
-    }
+acct := &CreditorBankAccountCreateRequest{
+    BankCode:      "Oyewale",
+    Currency:      "PND",
+    BranchCode:    "LEI",
+    AccountNumber: "03434",
+    CountryCode:   "GB",
+}
 
-    // create a creditor bank account
-    client.LoggingEnabled = true
-    account, err := client.CreditorBankAccount.CreateCreditorBankAccount(acct)
-    if err != nil {
-        // do something with error
-        fmt.Sprintf("The error while creating a creditor bank account is :%s", err.Error())
-    }
+// create a creditor bank account
+client.LoggingEnabled = true
+account, err := client.CreditorBankAccount.CreateCreditorBankAccount(acct)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a creditor bank account is :%s", err.Error())
+}
 
-    fmt.Sprintf("The creditor bank account created is: %s ", account.BankName)
+fmt.Sprintf("The creditor bank account created is: %s ", account.BankName)
 
-    // Get creditor bank Account by ID
-    account, err = client.CreditorBankAccount.GetCreditorBankAccount(account.Id)
-    if err != nil {
-        fmt.Sprintf("The error while getting a creditor bank account is :%s", err.Error())
-    }
+// Get creditor bank Account by ID
+account, err = client.CreditorBankAccount.GetCreditorBankAccount(account.Id)
+if err != nil {
+    fmt.Sprintf("The error while getting a creditor bank account is :%s", err.Error())
+}
 
-    fmt.Sprintf("The creditor bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
+fmt.Sprintf("The creditor bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
+```
+
+##### 5. Bank Details Lookup
+
+* Making the request
+```go
+client := NewClient(apiKey, nil)
+
+bankLookup := &BankDetailsLookupRequest{
+    AccountNumber: "55779911",
+    BranchCode: "200000",
+    CountryCode:       "GB",
+}
+account, err := client.BankDetailsLookup.Lookup(bankLookup)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while looking up details of a bank is :%s", err.Error())
+}
+fmt.Sprintf("The customer bank account updated is: %s ", account)
+```
+
+* Response
+```json
+
+    2017/09/02 22:03:42 Requesting POST api-sandbox.gocardless.com/bank_details_lookups
+    2017/09/02 22:03:46 Completed in 4.495158108s
+    RESPONSE https://api-sandbox.gocardless.com/bank_details_lookups
+    {"bank_details_lookups":{"bank_name":"BARCLAYS BANK PLC","available_debit_schemes":["bacs"],"bic":"BUKBGB22XXX"}}
+
 ```

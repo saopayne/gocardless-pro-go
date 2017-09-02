@@ -43,10 +43,13 @@ func (availableDebitSchemeList *AvailableDebitSchemeList) AddDebitScheme(debitSc
 
 // Performs a bank details lookup
 // As part of the lookup a modulus check and reachability check are performed.
-func (s *BankDetailsLookupService) Lookup(txn *BankDetailsLookupRequest) (*Response, error) {
+func (s *BankDetailsLookupService) Lookup(lookup *BankDetailsLookupRequest) (*Response, error) {
 	u := fmt.Sprintf("/bank_details_lookups")
 	resp := &Response{}
-	err := s.client.Call("POST", u, txn, resp)
+	rel := map[string]interface{}{
+		"bank_details_lookups": lookup,
+	}
+	err := s.client.Call("POST", u, rel, resp)
 
 	return resp, err
 }

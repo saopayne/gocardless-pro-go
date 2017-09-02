@@ -58,7 +58,7 @@ if err != nil {
 fmt.Sprintf("The customer retrieved with ID: %d is : %s", customer.ID, customer.Email)
 ```
 
-For a more descriptive usage [Click Here](https://github.com/saopayne/gocardless-pro-go/usage.md)
+For a more descriptive usage [Click Here](https://github.com/saopayne/gocardless-pro-go/blob/master/Usage.md)
 
 See the test files for more examples.
 

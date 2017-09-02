@@ -36,41 +36,41 @@ func main() {
 	 //This is useful if you're running in a Google AppEngine environment
 	 //where the http.DefaultClient is not available.
 	client := NewClient(apiKey, nil)
-
-	acct := &CreditorBankAccountCreateRequest{
-		BankCode:      "Oyewale",
-		Currency:      "PND",
-		BranchCode:    "LEI",
-		AccountNumber: "03434",
-		CountryCode:   "GB",
-	}
-	// create a creditor bank account
-	client.LoggingEnabled = true
-	account, err := client.CreditorBankAccount.CreateCreditorBankAccount(acct)
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while creating a creditor bank account is :%s", err.Error())
-	}
-	fmt.Sprintf("The creditor bank account created is: %s ", account.BankName)
-
-	// Get creditor bank Account by ID
-	account, err = client.CreditorBankAccount.GetCreditorBankAccount(account.Id)
-	if err != nil {
-		fmt.Sprintf("The error while getting a creditor bank account is :%s", err.Error())
-	}
-	fmt.Sprintf("The creditor bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
-
-	//custBankAccountUpdate := &CreditorBankAccount{
-	//	BankName:          "Oyewale",
-	//	AccountHolderName: "Ademola",
-	//	CountryCode:       "GB",
+	//
+	//acct := &CreditorBankAccountCreateRequest{
+	//	BankCode:      "Oyewale",
+	//	Currency:      "PND",
+	//	BranchCode:    "LEI",
+	//	AccountNumber: "03434",
+	//	CountryCode:   "GB",
 	//}
-	//account, err = client.CreditorBankAccount.Update(custBankAccountUpdate, make(map[string]string))
+	//// create a creditor bank account
+	//client.LoggingEnabled = true
+	//account, err := client.CreditorBankAccount.CreateCreditorBankAccount(acct)
 	//if err != nil {
 	//	// do something with error
-	//	fmt.Sprintf("The error while updating a customer bank account is :%s", err.Error())
+	//	fmt.Sprintf("The error while creating a creditor bank account is :%s", err.Error())
 	//}
-	//fmt.Sprintf("The customer bank account updated is: %s ", account.BankName)
+	//fmt.Sprintf("The creditor bank account created is: %s ", account.BankName)
+	//
+	//// Get creditor bank Account by ID
+	//account, err = client.CreditorBankAccount.GetCreditorBankAccount(account.Id)
+	//if err != nil {
+	//	fmt.Sprintf("The error while getting a creditor bank account is :%s", err.Error())
+	//}
+	//fmt.Sprintf("The creditor bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
+
+	bankLookup := &BankDetailsLookupRequest{
+		AccountNumber: "55779911",
+		BranchCode: "200000",
+		CountryCode:       "GB",
+	}
+	account, err := client.BankDetailsLookup.Lookup(bankLookup)
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while looking up details of a bank is :%s", err.Error())
+	}
+	fmt.Sprintf("The customer bank account updated is: %s ", account)
 
 }
 
