@@ -43,11 +43,12 @@ type MandateList struct {
 }
 
 type MandateCreateRequest struct {
-	Metadata      map[string]string `json:"metadata,omitempty"`
-	Reference     string            `json:"reference,omitempty"`
-	Scheme        string            `json:"scheme,omitempty"`
-	AccountNumber string            `json:"account_number,omitempty"`
-	Links         []string          `json:"links,omitempty"`
+	Metadata      		map[string]string 	`json:"metadata,omitempty"`
+	Reference     		string            	`json:"reference,omitempty"`
+	Scheme        		string            	`json:"scheme,omitempty"`
+	AccountNumber 		string            	`json:"account_number,omitempty"`
+	CustomerBankAccount string    		 	`json:"customer_bank_account,omitempty"`
+	Links         		string			  	`json:"links,omitempty"`
 }
 
 type MandateCancelRequest struct {
@@ -58,7 +59,11 @@ type MandateCancelRequest struct {
 func (s *MandateService) CreateMandate(mandateReq *MandateCreateRequest) (*Mandate, error) {
 	u := fmt.Sprintf("/mandates")
 	mandate := &Mandate{}
-	err := s.client.Call("POST", u, mandateReq, mandate)
+	rel := map[string]interface{}{
+		"mandates": mandateReq,
+	}
+
+	err := s.client.Call("POST", u, rel, mandate)
 
 	return mandate, err
 }
@@ -98,34 +103,48 @@ func (s *MandateService) GetMandate(id string) (*Mandate, error) {
 }
 
 func (s *MandateService) UpdateMandate(updatedMandate *Mandate, metadata map[string]string) (*Mandate, error) {
-	params := url.Values{}
-	metadataString, _ := json.Marshal(metadata)
-	params.Add("metadata", string(metadataString))
-	u := fmt.Sprintf("mandates/%s", updatedMandate.ID)
 	mandate := &Mandate{}
-	err := s.client.Call("PUT", u, params, mandate)
+	metadataString, _ := json.Marshal(metadata)
+	metaJson := string(metadataString[:])
+	metadataMap := make(map[string]string)
+	metadataMap["metadata"] = string(metaJson[:])
+	rel := map[string]interface{}{
+		"mandates": metadataMap,
+	}
+	u := fmt.Sprintf("mandates/%s", updatedMandate.ID)
+
+	err := s.client.Call("PUT", u, rel, mandate)
 
 	return mandate, err
 }
 
 func (s *MandateService) CancelMandate(mandateToCancel *Mandate, metadata map[string]string) (*Response, error) {
-	params := url.Values{}
-	metadataString, _ := json.Marshal(metadata)
-	params.Add("metadata", string(metadataString))
-	u := fmt.Sprintf("/mandates/%s/actions/cancel", mandateToCancel.ID)
 	resp := &Response{}
-	err := s.client.Call("POST", u, params, resp)
+	metadataString, _ := json.Marshal(metadata)
+	metaJson := string(metadataString[:])
+	metadataMap := make(map[string]string)
+	metadataMap["metadata"] = string(metaJson[:])
+	rel := map[string]interface{}{
+		"mandates": metadataMap,
+	}
+	u := fmt.Sprintf("/mandates/%s/actions/cancel", mandateToCancel.ID)
+	err := s.client.Call("POST", u, rel, resp)
 
 	return resp, err
 }
 
 func (s *MandateService) ReinstateMandate(mandateToReinstate *Mandate, metadata map[string]string) (*Response, error) {
-	params := url.Values{}
-	metadataString, _ := json.Marshal(metadata)
-	params.Add("metadata", string(metadataString))
-	u := fmt.Sprintf("/mandates/%s/actions/reinstate", mandateToReinstate.ID)
 	resp := &Response{}
-	err := s.client.Call("POST", u, params, resp)
+	metadataString, _ := json.Marshal(metadata)
+	metaJson := string(metadataString[:])
+	metadataMap := make(map[string]string)
+	metadataMap["metadata"] = string(metaJson[:])
+	rel := map[string]interface{}{
+		"mandates": metadataMap,
+	}
+	u := fmt.Sprintf("/mandates/%s/actions/reinstate", mandateToReinstate.ID)
+
+	err := s.client.Call("POST", u, rel, resp)
 
 	return resp, err
 }

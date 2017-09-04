@@ -36,41 +36,69 @@ func main() {
 	 //This is useful if you're running in a Google AppEngine environment
 	 //where the http.DefaultClient is not available.
 	client := NewClient(apiKey, nil)
-	//
-	//acct := &CreditorBankAccountCreateRequest{
-	//	BankCode:      "Oyewale",
-	//	Currency:      "PND",
-	//	BranchCode:    "LEI",
-	//	AccountNumber: "03434",
-	//	CountryCode:   "GB",
-	//}
-	//// create a creditor bank account
-	//client.LoggingEnabled = true
-	//account, err := client.CreditorBankAccount.CreateCreditorBankAccount(acct)
-	//if err != nil {
-	//	// do something with error
-	//	fmt.Sprintf("The error while creating a creditor bank account is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The creditor bank account created is: %s ", account.BankName)
-	//
-	//// Get creditor bank Account by ID
-	//account, err = client.CreditorBankAccount.GetCreditorBankAccount(account.Id)
-	//if err != nil {
-	//	fmt.Sprintf("The error while getting a creditor bank account is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The creditor bank account retrieved with ID: %d is : %s", account.Id, account.BankName)
+	linkMap := make(map[string]string)
+	linkMap["mandate"] = "MD123"
 
-	bankLookup := &BankDetailsLookupRequest{
-		AccountNumber: "55779911",
-		BranchCode: "200000",
-		CountryCode:       "GB",
+	mandateReq := &MandatePdfCreateRequest{
+		Links: linkMap,
 	}
-	account, err := client.BankDetailsLookup.Lookup(bankLookup)
+	// create a mandate
+	client.LoggingEnabled = true
+	mandate, err := client.MandatePdf.CreateMandatePdf(mandateReq)
 	if err != nil {
 		// do something with error
-		fmt.Sprintf("The error while looking up details of a bank is :%s", err.Error())
+		fmt.Sprintf("The error while creating a mandate pdf is :%s", err.Error())
 	}
-	fmt.Sprintf("The customer bank account updated is: %s ", account)
+	fmt.Sprintf("The mandate pdf created is: %s ", mandate.Url)
+
+	// Get mandate by ID
+	//mandate, err = client.Mandate.GetMandate("MD123")
+	//if err != nil {
+	//	fmt.Sprintf("The error while getting a mandate is :%s", err.Error())
+	//}
+	//fmt.Sprintf("The event retrieved with ID: %d is : %s", mandate.ID, mandate.Scheme)
+	//
+	//mandateUpdateReq := &Mandate{
+	//	Reference: "New reference",
+	//	Scheme: "bacs",
+	//}
+	//
+	//// update a mandate
+	//client.LoggingEnabled = true
+	//mandateToUpdate, err := client.Mandate.UpdateMandate(mandateUpdateReq, make(map[string]string))
+	//if err != nil {
+	//	// do something with error
+	//	fmt.Sprintf("The error while updating a mandate is :%s", err.Error())
+	//}
+	//fmt.Sprintf("The mandate updated is: %s ", mandateToUpdate.Reference)
+	//
+	//// cancel a mandate
+	//mandateCancelReq := &Mandate{
+	//	Reference: "New reference",
+	//	Scheme: "bacs",
+	//	ID: "MD123",
+	//}
+	//client.LoggingEnabled = true
+	//mandateToCancel, err := client.Mandate.CancelMandate(mandateCancelReq, make(map[string]string))
+	//if err != nil {
+	//	// do something with error
+	//	fmt.Sprintf("The error while canceling a mandate is :%s", err.Error())
+	//}
+	//fmt.Sprintf("The mandate canceled returned the response: %s ", mandateToCancel)
+	//
+	//// reinstate a mandate
+	//mandateReinReq := &Mandate{
+	//	Reference: "New reference",
+	//	Scheme: "bacs",
+	//	ID: "MD123",
+	//}
+	//client.LoggingEnabled = true
+	//mandateToRein, err := client.Mandate.ReinstateMandate(mandateReinReq, make(map[string]string))
+	//if err != nil {
+	//	// do something with error
+	//	fmt.Sprintf("The error while reinstating a mandate is :%s", err.Error())
+	//}
+	//fmt.Sprintf("The mandate reinstated returned a response: %s ", mandateToRein)
 
 }
 

@@ -37,13 +37,12 @@ type ResourceType struct {
 	ResourceType string `json:"resource_type,omitempty"`
 }
 
-
 type EventListRequest struct {
 	CreatedAt    CreatedAt    `json:"created_at,omitempty"`
 	Limit        int          `json:"limit,omitempty"`
 	Before       string       `json:"before,omitempty"`
 	After        string       `json:"after,omitempty"`
-	Include      string        `json:"include,omitempty"`
+	Include      string       `json:"include,omitempty"`
 	Action       string       `json:"action,omitempty"`
 	Mandate      string       `json:"mandate,omitempty"`
 	ParentEvent  string       `json:"parent_event,omitempty"`
@@ -85,9 +84,9 @@ func (s *EventService) ListNEvents(count, offset int, req *EventListRequest) (*E
 	params.Add("refund", req.Refund)
 	params.Add("resource_type", req.ResourceType.ResourceType)
 	params.Add("subscription", req.Subscription.ID)
-	u := paginateURL("/events", count, offset)
+	u := paginateURL("/events?include=payment", count, offset)
 	events := &EventList{}
-	err := s.client.Call("GET", u, params, events)
+	err := s.client.Call("GET", u, nil, events)
 
 	return events, err
 }
