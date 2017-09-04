@@ -333,3 +333,14 @@ fmt.Sprintf("The mandate pdf created is: %s ", mandate.Url)
 ```
 
 ##### 9. Payouts
+
+* Making the request
+
+```go
+// Get Payout by ID
+payout, err := client.Payout.GetPayout("PO123")
+if err != nil {
+    fmt.Sprintf("The error while getting a payout is :%s", err.Error())
+}
+fmt.Sprintf("The payout retrieved with ID: %d is : %s", payout.ID, payout.Reference)
+```

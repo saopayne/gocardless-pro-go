@@ -36,28 +36,28 @@ func main() {
 	 //This is useful if you're running in a Google AppEngine environment
 	 //where the http.DefaultClient is not available.
 	client := NewClient(apiKey, nil)
-	linkMap := make(map[string]string)
-	linkMap["mandate"] = "MD123"
-
-	mandateReq := &MandatePdfCreateRequest{
-		Links: linkMap,
-	}
-	// create a mandate
-	client.LoggingEnabled = true
-	mandate, err := client.MandatePdf.CreateMandatePdf(mandateReq)
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while creating a mandate pdf is :%s", err.Error())
-	}
-	fmt.Sprintf("The mandate pdf created is: %s ", mandate.Url)
-
-	// Get mandate by ID
-	//mandate, err = client.Mandate.GetMandate("MD123")
-	//if err != nil {
-	//	fmt.Sprintf("The error while getting a mandate is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The event retrieved with ID: %d is : %s", mandate.ID, mandate.Scheme)
+	//linkMap := make(map[string]string)
+	//linkMap["mandate"] = "MD123"
 	//
+	//mandateReq := &MandatePdfCreateRequest{
+	//	Links: linkMap,
+	//}
+	//// create a mandate
+	//client.LoggingEnabled = true
+	//mandate, err := client.MandatePdf.CreateMandatePdf(mandateReq)
+	//if err != nil {
+	//	// do something with error
+	//	fmt.Sprintf("The error while creating a mandate pdf is :%s", err.Error())
+	//}
+	//fmt.Sprintf("The mandate pdf created is: %s ", mandate.Url)
+
+	// Get Payout by ID
+	payout, err := client.Payout.GetPayout("PO123")
+	if err != nil {
+		fmt.Sprintf("The error while getting a payout is :%s", err.Error())
+	}
+	fmt.Sprintf("The payout retrieved with ID: %d is : %s", payout.ID, payout.Reference)
+
 	//mandateUpdateReq := &Mandate{
 	//	Reference: "New reference",
 	//	Scheme: "bacs",
