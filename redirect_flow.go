@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 )
 
 type RedirectFlowService service
@@ -28,6 +27,10 @@ type RedirectFlowCreateRequest struct {
 	Links              []string          `json:"links,omitempty"`
 }
 
+type RedirectFlowCompleteRequest struct {
+	SessionToken	string	`json:"session_token"`
+}
+
 type PrefilledCustomer struct {
 	ID                    int               `json:"id,omitempty"`
 	CreatedAt             string            `json:"createdAt,omitempty"`
@@ -48,10 +51,13 @@ type PrefilledCustomer struct {
 	Metadata              map[string]string `json:"metadata,omitempty"`
 }
 
-func (s *RedirectFlowService) Create(redirectFlow *RedirectFlow) (*RedirectFlow, error) {
+func (s *RedirectFlowService) Create(redirectFlow *RedirectFlowCreateRequest) (*RedirectFlow, error) {
 	u := fmt.Sprintf("/redirect_flows")
 	rFlow := &RedirectFlow{}
-	err := s.client.Call("POST", u, redirectFlow, rFlow)
+	rFlowMap := map[string]interface{}{
+		"redirect_flows": redirectFlow,
+	}
+	err := s.client.Call("POST", u, rFlowMap, rFlow)
 
 	return rFlow, err
 }
@@ -64,12 +70,15 @@ func (s *RedirectFlowService) GetRedirectFlow(id string) (*RedirectFlow, error) 
 	return rFlow, err
 }
 
-func (s *PaymentService) CompleteRedirectFlow(rFlowToComplete *RedirectFlow, sessionToken string) (*Response, error) {
-	params := url.Values{}
-	params.Add("session_token", sessionToken)
-	u := fmt.Sprintf("/redirect_flows/%s/actions/complete", rFlowToComplete.ID)
+func (s *RedirectFlowService) CompleteRedirectFlow(ID string, rFlowToComplete *RedirectFlowCompleteRequest) (*Response, error) {
+
+	rel := map[string]interface{}{
+		"data": rFlowToComplete,
+	}
+
+	u := fmt.Sprintf("/redirect_flows/%s/actions/complete", ID)
 	resp := &Response{}
-	err := s.client.Call("POST", u, params, resp)
+	err := s.client.Call("POST", u, rel, resp)
 
 	return resp, err
 }

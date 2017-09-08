@@ -1,9 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
-	"encoding/json"
 )
 
 type MandateService service
@@ -43,12 +43,12 @@ type MandateList struct {
 }
 
 type MandateCreateRequest struct {
-	Metadata      		map[string]string 	`json:"metadata,omitempty"`
-	Reference     		string            	`json:"reference,omitempty"`
-	Scheme        		string            	`json:"scheme,omitempty"`
-	AccountNumber 		string            	`json:"account_number,omitempty"`
-	CustomerBankAccount string    		 	`json:"customer_bank_account,omitempty"`
-	Links         		string			  	`json:"links,omitempty"`
+	Metadata            map[string]string `json:"metadata,omitempty"`
+	Reference           string            `json:"reference,omitempty"`
+	Scheme              string            `json:"scheme,omitempty"`
+	AccountNumber       string            `json:"account_number,omitempty"`
+	CustomerBankAccount string            `json:"customer_bank_account,omitempty"`
+	Links               string            `json:"links,omitempty"`
 }
 
 type MandateCancelRequest struct {

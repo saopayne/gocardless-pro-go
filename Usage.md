@@ -344,3 +344,57 @@ if err != nil {
 }
 fmt.Sprintf("The payout retrieved with ID: %d is : %s", payout.ID, payout.Reference)
 ```
+
+##### 10. Redirect Flows
+
+* Making the request
+
+```go
+client := NewClient(apiKey, nil)
+rFlowCreateReq := &RedirectFlowCreateRequest{
+    Description: "Wine vines",
+    SessionToken: "SESS_wSs0uGYMISxzqOBq",
+    PrefilledCustomer: PrefilledCustomer{
+        GivenName: "Ademola",
+        FamilyName: "Oyewale",
+    },
+    SuccessRedirectUrl: "https://wewee.ngrok.io/",
+}
+// create a redirecflow
+client.LoggingEnabled = true
+redirectFlow, err := client.RedirectFlow.Create(rFlowCreateReq)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a redirect flow pdf is :%s", err.Error())
+}
+fmt.Sprintf("The redirect flow created has the description: %s ", redirectFlow.Description)
+
+// Get Redirect Flow by ID
+rFlow, err := client.RedirectFlow.GetRedirectFlow("RE123")
+if err != nil {
+    fmt.Sprintf("The error while getting a redirect flow is :%s", err.Error())
+}
+fmt.Sprintf("The redirecte flow retrieved with ID: %d is : %s", rFlow.ID, rFlow.Description)
+
+rFlowCompleteReq := &RedirectFlowCompleteRequest{
+    SessionToken: "SESS_wSs0uGYMISxzqOBq",
+}
+// complete a redirecflow
+client.LoggingEnabled = true
+redFlow, err := client.RedirectFlow.CompleteRedirectFlow("RE123", rFlowCompleteReq)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while completing a redirect flow pdf is :%s", err.Error())
+}
+fmt.Sprintf("The redirect flow completed has the description: %s ", redFlow)
+```
+
+* Sample Request Response
+```json
+ {"redirect_flows":{"id":"RE0000K6652W0ZPNPPRZ9MJKNHCPWCM7","description":"Wine vines","session_token":"SESS_wSs0uGYMISxzqOBq","scheme":null,"success_redirect_url":"https://wewee.ngrok.io/",
+ "created_at":"2017-09-08T07:32:41.957Z","links":{"creditor":"CR00004YMS7RA5"},"redirect_url":"https://pay-sandbox.gocardless.com/flow/RE0000K6652W0ZPNPPRZ9MJKNHCPWCM7"}}
+ RESPONSE https://api-sandbox.gocardless.com/redirect_flows/RE123
+```
+
+##### 11. Refunds
+

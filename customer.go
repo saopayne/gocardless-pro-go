@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 type CustomerService service
 
 type Customer struct {
-	ID                    string               `json:"id,omitempty"`
+	ID                    string            `json:"id,omitempty"`
 	CreatedAt             string            `json:"createdAt,omitempty"`
 	UpdatedAt             string            `json:"updatedAt,omitempty"`
 	AddressLine1          string            `json:"address_line1,omitempty"`
@@ -31,7 +31,6 @@ type CustomerCreateRequest struct {
 	Customers struct {
 		Customers Customer `json:"customers"`
 	}
-
 }
 
 type CustomerListRequest struct {
@@ -74,7 +73,7 @@ func (s *CustomerService) Create(customer *Customer) (*Customer, error) {
 	}
 	custJson, _ := json.Marshal(rel)
 	customerObject := string(custJson[:])
-	fmt.Sprintf("Making request with the params %s",customerObject)
+	fmt.Sprintf("Making request with the params %s", customerObject)
 	err := s.client.Call("POST", u, rel, cust)
 
 	return cust, err

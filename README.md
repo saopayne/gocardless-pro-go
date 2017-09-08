@@ -4,7 +4,7 @@
 
 #### [__Work In Progress__]
 
-This library provides a simple wrapper around the [GoCardless API](http://developer.gocardless.com/api-reference).
+Go library to access GoCardless API. This library provides a simple wrapper around the [GoCardless API](http://developer.gocardless.com/api-reference).
 
 - [API Reference](https://developer.gocardless.com/api-reference/2015-07-06)
 
@@ -56,6 +56,26 @@ if err != nil {
 }
 
 fmt.Sprintf("The customer retrieved with ID: %d is : %s", customer.ID, customer.Email)
+
+// Creating a redirect flow
+rFlowCreateReq := &RedirectFlowCreateRequest{
+    Description: "Wine vines",
+    SessionToken: "SESS_wSs0uGYMISxzqOBq",
+    PrefilledCustomer: PrefilledCustomer{
+        GivenName: "Ademola",
+        FamilyName: "Oyewale",
+    },
+    SuccessRedirectUrl: "https://wewee.ngrok.io/",
+}
+// create a redirecflow
+client.LoggingEnabled = true
+redirectFlow, err := client.RedirectFlow.Create(rFlowCreateReq)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a redirect flow pdf is :%s", err.Error())
+}
+fmt.Sprintf("The redirect flow created has the description: %s ", redirectFlow.Description)
+
 ```
 
 For a more descriptive usage [Click Here](https://github.com/saopayne/gocardless-pro-go/blob/master/Usage.md)

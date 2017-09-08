@@ -1,9 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
-	"encoding/json"
 )
 
 type CustomerBankAccountService service
@@ -54,7 +54,7 @@ type CustomerBankAccountDisableRequest struct {
 
 // Create creates a new customer bank account
 func (s *CustomerBankAccountService) CreateCustomerBankAccount(bankAccount *CustomerBankAccountCreateRequest) (*CustomerBankAccount, error) {
-		// do something with error
+	// do something with error
 	fmt.Sprintf("The error while creating a customer bank account is :%s", "About to create")
 
 	u := fmt.Sprintf("/customer_bank_accounts")

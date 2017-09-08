@@ -32,31 +32,47 @@ func main() {
 
 	apiKey := "sandbox_o55p5OowBX59Rd8aDR7c_25LQdBTHRaACeVnqj0o"
 
-	 //second param is an optional http client, allowing overriding of the HTTP client to use.
-	 //This is useful if you're running in a Google AppEngine environment
-	 //where the http.DefaultClient is not available.
+	//second param is an optional http client, allowing overriding of the HTTP client to use.
+	//This is useful if you're running in a Google AppEngine environment
+	//where the http.DefaultClient is not available.
 	client := NewClient(apiKey, nil)
-	//linkMap := make(map[string]string)
-	//linkMap["mandate"] = "MD123"
-	//
-	//mandateReq := &MandatePdfCreateRequest{
-	//	Links: linkMap,
-	//}
-	//// create a mandate
-	//client.LoggingEnabled = true
-	//mandate, err := client.MandatePdf.CreateMandatePdf(mandateReq)
-	//if err != nil {
-	//	// do something with error
-	//	fmt.Sprintf("The error while creating a mandate pdf is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The mandate pdf created is: %s ", mandate.Url)
 
-	// Get Payout by ID
-	payout, err := client.Payout.GetPayout("PO123")
-	if err != nil {
-		fmt.Sprintf("The error while getting a payout is :%s", err.Error())
+	rFlowCreateReq := &RedirectFlowCreateRequest{
+		Description: "Wine vines",
+		SessionToken: "SESS_wSs0uGYMISxzqOBq",
+		PrefilledCustomer: PrefilledCustomer{
+			GivenName: "Ademola",
+			FamilyName: "Oyewale",
+		},
+		SuccessRedirectUrl: "https://wewee.ngrok.io/",
 	}
-	fmt.Sprintf("The payout retrieved with ID: %d is : %s", payout.ID, payout.Reference)
+	// create a redirecflow
+	client.LoggingEnabled = true
+	redirectFlow, err := client.RedirectFlow.Create(rFlowCreateReq)
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while creating a redirect flow pdf is :%s", err.Error())
+	}
+	fmt.Sprintf("The redirect flow created has the description: %s ", redirectFlow.Description)
+
+	// Get Redirect Flow by ID
+	rFlow, err := client.RedirectFlow.GetRedirectFlow("RE123")
+	if err != nil {
+		fmt.Sprintf("The error while getting a redirect flow is :%s", err.Error())
+	}
+	fmt.Sprintf("The redirecte flow retrieved with ID: %d is : %s", rFlow.ID, rFlow.Description)
+
+	rFlowCompleteReq := &RedirectFlowCompleteRequest{
+		SessionToken: "SESS_wSs0uGYMISxzqOBq",
+	}
+	// complete a redirecflow
+	client.LoggingEnabled = true
+	redFlow, err := client.RedirectFlow.CompleteRedirectFlow("RE123", rFlowCompleteReq)
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while completing a redirect flow pdf is :%s", err.Error())
+	}
+	fmt.Sprintf("The redirect flow completed has the description: %s ", redFlow)
 
 	//mandateUpdateReq := &Mandate{
 	//	Reference: "New reference",
