@@ -37,84 +37,56 @@ func main() {
 	//where the http.DefaultClient is not available.
 	client := NewClient(apiKey, nil)
 
-	rFlowCreateReq := &RedirectFlowCreateRequest{
-		Description: "Wine vines",
-		SessionToken: "SESS_wSs0uGYMISxzqOBq",
-		PrefilledCustomer: PrefilledCustomer{
-			GivenName: "Ademola",
-			FamilyName: "Oyewale",
+	subCreateReq := &SubscriptionCreateRequest{
+		Amount: 100,
+		Currency: "GBP",
+		IntervalUnit: "monthly",
+
+
+	}
+	// create a subscription
+	client.LoggingEnabled = true
+	subscription, err := client.Subscription.CreateSubscription(subCreateReq)
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while creating a subscription :%s", err.Error())
+	}
+	fmt.Sprintf("The subscription created has the ID: %s ", subscription.ID)
+
+	// Get Subscription by ID
+	subscription, err = client.Subscription.GetSubscription("SB123")
+	if err != nil {
+		fmt.Sprintf("The error while getting a subscription is :%s", err.Error())
+	}
+	fmt.Sprintf("The subscription retrieved with ID: %d is : %s", subscription.ID, subscription.Name)
+
+
+	subUpdateReq := &Subscription{
+		Amount: 10,
+	}
+
+	// update a refund
+	client.LoggingEnabled = true
+	subToUpdate, err := client.Subscription.UpdateSubscription(subUpdateReq, "sample", "SB123", make(map[string]string))
+	if err != nil {
+		// do something with error
+		fmt.Sprintf("The error while updating a subscription is :%s", err.Error())
+	}
+	fmt.Sprintf("The subscription updated is: %s ", subToUpdate.Name)
+
+	// cancel a mandate
+	subCancelReq := &Subscription{
+		Metadata: map[string]string{
+			"order_no": "ABCD1234",
 		},
-		SuccessRedirectUrl: "https://wewee.ngrok.io/",
 	}
-	// create a redirecflow
 	client.LoggingEnabled = true
-	redirectFlow, err := client.RedirectFlow.Create(rFlowCreateReq)
+	subToCancel, err := client.Subscription.CancelSubscription(subCancelReq, make(map[string]string))
 	if err != nil {
 		// do something with error
-		fmt.Sprintf("The error while creating a redirect flow pdf is :%s", err.Error())
+		fmt.Sprintf("The error while canceling a subscription is :%s", err.Error())
 	}
-	fmt.Sprintf("The redirect flow created has the description: %s ", redirectFlow.Description)
-
-	// Get Redirect Flow by ID
-	rFlow, err := client.RedirectFlow.GetRedirectFlow("RE123")
-	if err != nil {
-		fmt.Sprintf("The error while getting a redirect flow is :%s", err.Error())
-	}
-	fmt.Sprintf("The redirecte flow retrieved with ID: %d is : %s", rFlow.ID, rFlow.Description)
-
-	rFlowCompleteReq := &RedirectFlowCompleteRequest{
-		SessionToken: "SESS_wSs0uGYMISxzqOBq",
-	}
-	// complete a redirecflow
-	client.LoggingEnabled = true
-	redFlow, err := client.RedirectFlow.CompleteRedirectFlow("RE123", rFlowCompleteReq)
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while completing a redirect flow pdf is :%s", err.Error())
-	}
-	fmt.Sprintf("The redirect flow completed has the description: %s ", redFlow)
-
-	//mandateUpdateReq := &Mandate{
-	//	Reference: "New reference",
-	//	Scheme: "bacs",
-	//}
-	//
-	//// update a mandate
-	//client.LoggingEnabled = true
-	//mandateToUpdate, err := client.Mandate.UpdateMandate(mandateUpdateReq, make(map[string]string))
-	//if err != nil {
-	//	// do something with error
-	//	fmt.Sprintf("The error while updating a mandate is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The mandate updated is: %s ", mandateToUpdate.Reference)
-	//
-	//// cancel a mandate
-	//mandateCancelReq := &Mandate{
-	//	Reference: "New reference",
-	//	Scheme: "bacs",
-	//	ID: "MD123",
-	//}
-	//client.LoggingEnabled = true
-	//mandateToCancel, err := client.Mandate.CancelMandate(mandateCancelReq, make(map[string]string))
-	//if err != nil {
-	//	// do something with error
-	//	fmt.Sprintf("The error while canceling a mandate is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The mandate canceled returned the response: %s ", mandateToCancel)
-	//
-	//// reinstate a mandate
-	//mandateReinReq := &Mandate{
-	//	Reference: "New reference",
-	//	Scheme: "bacs",
-	//	ID: "MD123",
-	//}
-	//client.LoggingEnabled = true
-	//mandateToRein, err := client.Mandate.ReinstateMandate(mandateReinReq, make(map[string]string))
-	//if err != nil {
-	//	// do something with error
-	//	fmt.Sprintf("The error while reinstating a mandate is :%s", err.Error())
-	//}
-	//fmt.Sprintf("The mandate reinstated returned a response: %s ", mandateToRein)
+	fmt.Sprintf("The subscription canceled returned the response: %s ", subToCancel)
 
 }
 

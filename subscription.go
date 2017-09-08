@@ -64,8 +64,8 @@ type SubscriptionCreateRequest struct {
 	Interval         int               `json:"interval,omitempty"`
 	EndDate          string            `json:"end_date,omitempty"`
 	DayOfMonth       string            `json:"day_of_month,omitempty"`
-	IntervalUnit     IntervalUnit      `json:"interval_unit,omitempty"`
-	Amount           string            `json:"amount,omitempty"`
+	IntervalUnit     string		      `json:"interval_unit,omitempty"`
+	Amount           int64            `json:"amount,omitempty"`
 	Currency         string            `json:"currency,omitempty"`
 	AppFee           string            `json:"app_fee,omitempty"`
 	Count            string            `json:"count,omitempty"`
@@ -73,15 +73,19 @@ type SubscriptionCreateRequest struct {
 	AccountNumber    string            `json:"account_number,omitempty"`
 }
 
+
 type SubscriptionCancelRequest struct {
-	Identity string `json:"identity,omitempty"`
+	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
 // Create creates a new subscription
 func (s *SubscriptionService) CreateSubscription(subscriptionReq *SubscriptionCreateRequest) (*Subscription, error) {
 	u := fmt.Sprintf("/subscriptions")
 	subscription := &Subscription{}
-	err := s.client.Call("POST", u, subscriptionReq, subscription)
+	rel := map[string]interface{}{
+		"subscriptions": subscriptionReq,
+	}
+	err := s.client.Call("POST", u, rel, subscription)
 
 	return subscription, err
 }
@@ -119,25 +123,34 @@ func (s *SubscriptionService) GetSubscription(id string) (*Subscription, error) 
 }
 
 func (s *SubscriptionService) UpdateSubscription(updatedSubscription *Subscription, name string, reference string, metadata map[string]string) (*Subscription, error) {
-	params := url.Values{}
 	metadataString, _ := json.Marshal(metadata)
-	params.Add("metadata", string(metadataString))
-	params.Add("payment_reference", reference)
-	params.Add("name", name)
+	metaJson := string(metadataString[:])
+	metadataMap := make(map[string]string)
+	metadataMap["metadata"] = string(metaJson[:])
+	metadataMap["name"] = name
+	metadataMap["payment_reference"] = reference
+	rel := map[string]interface{}{
+		"mandates": metadataMap,
+	}
+
 	u := fmt.Sprintf("/subscriptions/%s", updatedSubscription.ID)
 	sub := &Subscription{}
-	err := s.client.Call("PUT", u, params, sub)
+	err := s.client.Call("PUT", u, rel, sub)
 
 	return sub, err
 }
 
 func (s *SubscriptionService) CancelSubscription(subscriptionToCancel *Subscription, metadata map[string]string) (*Response, error) {
-	params := url.Values{}
 	metadataString, _ := json.Marshal(metadata)
-	params.Add("metadata", string(metadataString))
+	metaJson := string(metadataString[:])
+	metadataMap := make(map[string]string)
+	metadataMap["metadata"] = string(metaJson[:])
+	rel := map[string]interface{}{
+		"subscriptions": metadataMap,
+	}
 	u := fmt.Sprintf("/subscriptions/%s/actions/cancel", subscriptionToCancel.ID)
 	resp := &Response{}
-	err := s.client.Call("POST", u, params, resp)
+	err := s.client.Call("POST", u, rel, resp)
 
 	return resp, err
 }

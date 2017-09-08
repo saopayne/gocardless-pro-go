@@ -398,3 +398,103 @@ fmt.Sprintf("The redirect flow completed has the description: %s ", redFlow)
 
 ##### 11. Refunds
 
+* Making the request
+
+```go
+refundCreateReq := &RefundCreateRequest{
+    Amount: 100,
+    TotalAmountConfirmation: "200",
+    Links: map[string]string{
+        "payment":"PM123",
+    },
+
+}
+// create a refund
+client.LoggingEnabled = true
+refund, err := client.Refund.CreateRefund(refundCreateReq)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a refund :%s", err.Error())
+}
+fmt.Sprintf("The refund created has the reference: %s ", refund.Reference)
+
+// Get Refund by ID
+refund, err = client.Refund.GetRefund("RF123")
+if err != nil {
+    fmt.Sprintf("The error while getting a refund is :%s", err.Error())
+}
+fmt.Sprintf("The refund retrieved with ID: %d is : %s", refund.ID, refund.Reference)
+
+
+refundUpdateReq := &Refund{
+    Reference: "New reference",
+    Amount: 10,
+}
+
+// update a refund
+client.LoggingEnabled = true
+refundToUpdate, err := client.Refund.UpdateRefund(refundUpdateReq, make(map[string]string))
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while updating a refund is :%s", err.Error())
+}
+fmt.Sprintf("The refund updated is: %s ", refundToUpdate.Reference)
+
+```
+
+##### 12. Subscriptions
+
+* Making the request
+
+```go
+subCreateReq := &SubscriptionCreateRequest{
+    Amount: 100,
+    Currency: "GBP",
+    IntervalUnit: "monthly",
+
+
+}
+// create a subscription
+client.LoggingEnabled = true
+subscription, err := client.Subscription.CreateSubscription(subCreateReq)
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while creating a subscription :%s", err.Error())
+}
+fmt.Sprintf("The subscription created has the ID: %s ", subscription.ID)
+
+// Get Subscription by ID
+subscription, err = client.Subscription.GetSubscription("SB123")
+if err != nil {
+    fmt.Sprintf("The error while getting a subscription is :%s", err.Error())
+}
+fmt.Sprintf("The subscription retrieved with ID: %d is : %s", subscription.ID, subscription.Name)
+
+
+subUpdateReq := &Subscription{
+    Amount: 10,
+}
+
+// update a refund
+client.LoggingEnabled = true
+subToUpdate, err := client.Subscription.UpdateSubscription(subUpdateReq, "sample", "SB123", make(map[string]string))
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while updating a subscription is :%s", err.Error())
+}
+fmt.Sprintf("The subscription updated is: %s ", subToUpdate.Name)
+
+// cancel a mandate
+subCancelReq := &Subscription{
+    Metadata: map[string]string{
+        "order_no": "ABCD1234",
+    },
+}
+client.LoggingEnabled = true
+subToCancel, err := client.Subscription.CancelSubscription(subCancelReq, make(map[string]string))
+if err != nil {
+    // do something with error
+    fmt.Sprintf("The error while canceling a subscription is :%s", err.Error())
+}
+fmt.Sprintf("The subscription canceled returned the response: %s ", subToCancel)
+```

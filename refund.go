@@ -34,16 +34,32 @@ type RefundList struct {
 type RefundCreateRequest struct {
 	Metadata                map[string]string `json:"metadata,omitempty"`
 	Reference               string            `json:"reference,omitempty"`
-	Amount                  string            `json:"amount,omitempty"`
+	Amount                  int64             `json:"amount,omitempty"`
 	TotalAmountConfirmation string            `json:"total_amount_confirmation,omitempty"`
-	Links                   []string          `json:"links,omitempty"`
+	Links                   map[string]string `json:"links,omitempty"`
+
 }
 
-// Create creates a new refund
+//Creates a new refund object.
+//This fails with:
+//refund_payment_invalid_state error if the linked payment isn’t either confirmed or paid_out.
+//total_amount_confirmation_invalid if the confirmation amount doesn’t match the total amount refunded for the payment. This safeguard is there to prevent two processes from creating refunds without awareness of each other.
+//number_of_refunds_exceeded if five or more refunds have already been created against the payment.
 func (s *RefundService) CreateRefund(refundReq *RefundCreateRequest) (*Refund, error) {
 	u := fmt.Sprintf("/refunds")
 	refund := &Refund{}
-	err := s.client.Call("POST", u, refundReq, refund)
+
+	linksString, _ := json.Marshal(refundReq.Links)
+	linksJson := string(linksString[:])
+	linksMap := make(map[string]string)
+
+	linksMap["links"] = string(linksJson[:])
+	refundReq.Links = linksMap
+	fmt.Println(refundReq)
+	refundsMap := map[string]interface{}{
+		"refunds": refundReq,
+	}
+	err := s.client.Call("POST", u, refundsMap, refund)
 
 	return refund, err
 }
@@ -71,6 +87,8 @@ func (s *RefundService) ListNRefunds(count, offset int, req *RefundListRequest) 
 	return refunds, err
 }
 
+//Retrieves all details for a single refund
+//Relative endpoint: GET /refunds/RF123
 func (s *RefundService) GetRefund(id string) (*Refund, error) {
 	u := fmt.Sprintf("/refunds/%s", id)
 	refund := &Refund{}
@@ -79,13 +97,21 @@ func (s *RefundService) GetRefund(id string) (*Refund, error) {
 	return refund, err
 }
 
+//Updates a refund object.
+//Relative endpoint: PUT /refunds/RF123
 func (s *RefundService) UpdateRefund(updatedRefund *Refund, metadata map[string]string) (*Refund, error) {
-	params := url.Values{}
-	metadataString, _ := json.Marshal(metadata)
-	params.Add("metadata", string(metadataString))
-	u := fmt.Sprintf("/refunds/%s", updatedRefund.ID)
 	refund := &Refund{}
-	err := s.client.Call("PUT", u, params, refund)
+
+	metadataString, _ := json.Marshal(metadata)
+	metaJson := string(metadataString[:])
+	metadataMap := make(map[string]string)
+	metadataMap["metadata"] = string(metaJson[:])
+	rel := map[string]interface{}{
+		"refunds": metadataMap,
+	}
+	u := fmt.Sprintf("/refunds/%s", updatedRefund.ID)
+
+	err := s.client.Call("PUT", u, rel, refund)
 
 	return refund, err
 }
