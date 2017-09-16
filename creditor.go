@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type CreditorService service
@@ -97,22 +99,31 @@ func (c *CreditorService) CreateCreditor(creditor *Creditor) (*Creditor, error) 
 	return crd, err
 }
 
-func (s *CreditorService) ListCreditors(req *CreditorListRequest) (*CreditorList, error) {
-	return s.ListNCreditors(100, 10, req)
-}
 
-func (s *CreditorService) ListNCreditors(count, offset int, req *CreditorListRequest) (*CreditorList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	u := paginateURL("/creditors", count, offset)
+func (s *CreditorService) ListCreditors(req *CreditorListRequest) (*CreditorList, error) {
+
+	reqd, err := http.NewRequest("GET", "/creditors", nil)
+
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" {params.Add("created_at[lte]", req.CreatedAt.Lte)}
+	if req.Limit > 0 {params.Add("limit", string(req.Limit))}
+
+	reqd.URL.RawQuery = params.Encode()
+
+	path := reqd.URL.String()
+
 	sub := &CreditorList{}
-	err := s.client.Call("GET", u, params, sub)
+	err = s.client.Call("GET", path, nil, sub)
 
 	return sub, err
 }

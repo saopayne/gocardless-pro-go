@@ -37,56 +37,20 @@ func main() {
 	//where the http.DefaultClient is not available.
 	client := NewClient(apiKey, nil)
 
-	subCreateReq := &SubscriptionCreateRequest{
-		Amount: 100,
-		Currency: "GBP",
-		IntervalUnit: "monthly",
-
-
+	creditorListReq	:= &CreditorListRequest{
+		Limit: 100,
 	}
-	// create a subscription
+
+	// list all creditors
 	client.LoggingEnabled = true
-	subscription, err := client.Subscription.CreateSubscription(subCreateReq)
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while creating a subscription :%s", err.Error())
-	}
-	fmt.Sprintf("The subscription created has the ID: %s ", subscription.ID)
 
 	// Get Subscription by ID
-	subscription, err = client.Subscription.GetSubscription("SB123")
+	creditors, err := client.Creditor.ListCreditors(creditorListReq)
 	if err != nil {
-		fmt.Sprintf("The error while getting a subscription is :%s", err.Error())
+		fmt.Sprintf("The error while getting list of creditors is :%s", err.Error())
 	}
-	fmt.Sprintf("The subscription retrieved with ID: %d is : %s", subscription.ID, subscription.Name)
+	fmt.Sprintf("The creditors list retrieved is : %s", creditors.Values)
 
-
-	subUpdateReq := &Subscription{
-		Amount: 10,
-	}
-
-	// update a refund
-	client.LoggingEnabled = true
-	subToUpdate, err := client.Subscription.UpdateSubscription(subUpdateReq, "sample", "SB123", make(map[string]string))
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while updating a subscription is :%s", err.Error())
-	}
-	fmt.Sprintf("The subscription updated is: %s ", subToUpdate.Name)
-
-	// cancel a mandate
-	subCancelReq := &Subscription{
-		Metadata: map[string]string{
-			"order_no": "ABCD1234",
-		},
-	}
-	client.LoggingEnabled = true
-	subToCancel, err := client.Subscription.CancelSubscription(subCancelReq, make(map[string]string))
-	if err != nil {
-		// do something with error
-		fmt.Sprintf("The error while canceling a subscription is :%s", err.Error())
-	}
-	fmt.Sprintf("The subscription canceled returned the response: %s ", subToCancel)
 
 }
 
