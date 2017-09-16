@@ -417,6 +417,17 @@ if err != nil {
     fmt.Sprintf("The error while getting a payout is :%s", err.Error())
 }
 fmt.Sprintf("The payout retrieved with ID: %d is : %s", payout.ID, payout.Reference)
+
+// list all payouts
+payoutsListReq := &PayoutListRequest{
+    Limit: 100,
+}
+// list all payouts
+_, err := client.Payout.ListPayouts(payoutsListReq)
+if err != nil {
+    fmt.Sprintf("The error while getting list of payouts  is :%s", err.Error())
+}
+
 ```
 
 ##### 10. Redirect Flows

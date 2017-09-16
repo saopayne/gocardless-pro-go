@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type PayoutService service
@@ -44,27 +46,29 @@ type PayoutList struct {
 
 // List returns a list of payments
 func (s *PayoutService) ListPayouts(req *PayoutListRequest) (*PayoutList, error) {
-	return s.ListNPayouts(10, 0, req)
-}
+	reqd, err := http.NewRequest("GET", "/payouts", nil)
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" { params.Add("created_at[lte]", req.CreatedAt.Lte) }
+	if req.Limit > 0 { params.Add("limit", string(req.Limit)) }
+	if req.Status != "" { params.Add("status", req.Status) }
+	if req.Currency != "" {params.Add("currency", req.Currency)}
+	if req.CreditorBankAccount != "" {params.Add("creditor_bank_account", req.CreditorBankAccount)}
+	if req.Creditor != "" {params.Add("creditor", req.Creditor)}
+	if req.PayoutType != "" {params.Add("payout_type", req.PayoutType)}
 
-func (s *PayoutService) ListNPayouts(count, offset int, req *PayoutListRequest) (*PayoutList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	params.Add("status", req.Status)
-	params.Add("creditor", req.Creditor)
-	params.Add("creditor_bank_account", req.CreditorBankAccount)
-	params.Add("payout_type", req.PayoutType)
-	params.Add("currency", req.Currency)
-
-	u := paginateURL("/payouts", count, offset)
+	reqd.URL.RawQuery = params.Encode()
+	path := reqd.URL.String()
 	payoutList := &PayoutList{}
-	err := s.client.Call("GET", u, params, payoutList)
+	err = s.client.Call("GET", path, nil, payoutList)
 
 	return payoutList, err
 }

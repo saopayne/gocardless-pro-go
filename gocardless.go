@@ -38,13 +38,13 @@ func main() {
 	client := NewClient(apiKey, nil)
 	client.LoggingEnabled = true
 
-	mandateListReq := &MandateListRequest{
+	payoutsListReq := &PayoutListRequest{
 		Limit: 100,
 	}
-	// list all mandates
-	_, err := client.Mandate.ListNMandates(mandateListReq)
+	// list all payouts
+	_, err := client.Payout.ListPayouts(payoutsListReq)
 	if err != nil {
-		fmt.Sprintf("The error while getting list of mandates  is :%s", err.Error())
+		fmt.Sprintf("The error while getting list of payouts  is :%s", err.Error())
 	}
 
 }

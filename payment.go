@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type PaymentService service
@@ -67,28 +70,30 @@ func (s *PaymentService) CreatePayment(paymentReq *PaymentCreateRequest) (*Payme
 
 // List returns a list of payments
 func (s *PaymentService) ListPayments(req *PaymentListRequest) (*PaymentList, error) {
-	return s.ListNPayments(10, 0, req)
-}
+	reqd, err := http.NewRequest("GET", "/payments", nil)
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" { params.Add("created_at[lte]", req.CreatedAt.Lte) }
+	if req.Limit > 0 { params.Add("limit", string(req.Limit)) }
+	if req.Mandate != "" { params.Add("mandate", req.Mandate) }
+	if req.Status != "" { params.Add("status", req.Status) }
+	if req.Currency != "" {params.Add("currency", req.Currency)}
+	if req.Customer != "" {params.Add("customer", req.Customer)}
+	if req.Creditor != "" {params.Add("creditor", req.Creditor)}
+	if req.Subscription != "" {params.Add("subscription", req.Subscription)}
 
-func (s *PaymentService) ListNPayments(count, offset int, req *PaymentListRequest) (*PaymentList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	params.Add("status", req.Status)
-	params.Add("mandate", req.Mandate)
-	params.Add("customer", req.Customer)
-	params.Add("creditor", req.Creditor)
-	params.Add("currency", req.Currency)
-	params.Add("subscription", req.Subscription)
-
-	u := paginateURL("/payments", count, offset)
+	reqd.URL.RawQuery = params.Encode()
+	path := reqd.URL.String()
 	payments := &PaymentList{}
-	err := s.client.Call("GET", u, params, payments)
+	err = s.client.Call("GET", path, nil, payments)
 
 	return payments, err
 }

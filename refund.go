@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type RefundService service
@@ -66,23 +68,25 @@ func (s *RefundService) CreateRefund(refundReq *RefundCreateRequest) (*Refund, e
 
 // List returns a list of refunds
 func (s *RefundService) ListRefunds(req *RefundListRequest) (*RefundList, error) {
-	return s.ListNRefunds(10, 0, req)
-}
+	reqd, err := http.NewRequest("GET", "/refunds", nil)
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" { params.Add("created_at[lte]", req.CreatedAt.Lte) }
+	if req.Limit > 0 { params.Add("limit", string(req.Limit)) }
+	if req.Payment != "" { params.Add("payment", req.Payment) }
 
-func (s *RefundService) ListNRefunds(count, offset int, req *RefundListRequest) (*RefundList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	params.Add("payment", req.Payment)
-
-	u := paginateURL("/refunds", count, offset)
+	reqd.URL.RawQuery = params.Encode()
+	path := reqd.URL.String()
 	refunds := &RefundList{}
-	err := s.client.Call("GET", u, params, refunds)
+	err = s.client.Call("GET", path, nil, refunds)
 
 	return refunds, err
 }
