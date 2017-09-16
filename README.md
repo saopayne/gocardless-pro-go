@@ -12,7 +12,7 @@ Go library to access GoCardless API. This library provides a simple wrapper arou
 ## Getting started
 
 ```
-go get github.com/saopayne/gocardless
+go get github.com/saopayne/gocardless-pro-go
 ```
 
 ## Initializing the client
