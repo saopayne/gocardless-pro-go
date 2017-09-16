@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type CreditorBankAccountService service
@@ -65,26 +67,33 @@ func (s *CreditorBankAccountService) CreateCreditorBankAccount(bankAccount *Cred
 	return account, err
 }
 
-// List returns a list of credit bank accounts.
-// https://developer.gocardless.com/api-reference/#creditor-bank-accounts-list-creditor-bank-accounts
-func (s *CreditorBankAccountService) ListCreditorBankAccount(req *CreditorBankAccountListRequest) (*CreditorBankAccountList, error) {
-	return s.ListNCreditorBankAccount(10, 0, req)
-}
 
 // ListN Returns a cursor-paginated list of your creditor bank accounts.
 // https://developer.gocardless.com/api-reference/#creditor-bank-accounts-list-creditor-bank-accounts
-func (s *CreditorBankAccountService) ListNCreditorBankAccount(count, offset int, req *CreditorBankAccountListRequest) (*CreditorBankAccountList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	u := paginateURL("/creditor_bank_accounts", count, offset)
+func (s *CreditorBankAccountService) ListCreditorBankAccounts(req *CreditorBankAccountListRequest) (*CreditorBankAccountList, error) {
+
+	reqd, err := http.NewRequest("GET", "/creditor_bank_accounts", nil)
+
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" {params.Add("created_at[lte]", req.CreatedAt.Lte)}
+	if req.Limit > 0 {params.Add("limit", string(req.Limit))}
+
+	reqd.URL.RawQuery = params.Encode()
+
+	path := reqd.URL.String()
+
 	bankAccounts := &CreditorBankAccountList{}
-	err := s.client.Call("GET", u, params, bankAccounts)
+	err = s.client.Call("GET", path, nil, bankAccounts)
 
 	return bankAccounts, err
 }

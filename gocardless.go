@@ -36,21 +36,16 @@ func main() {
 	//This is useful if you're running in a Google AppEngine environment
 	//where the http.DefaultClient is not available.
 	client := NewClient(apiKey, nil)
-
-	creditorListReq	:= &CreditorListRequest{
-		Limit: 100,
-	}
-
-	// list all creditors
 	client.LoggingEnabled = true
 
-	// Get Subscription by ID
-	creditors, err := client.Creditor.ListCreditors(creditorListReq)
-	if err != nil {
-		fmt.Sprintf("The error while getting list of creditors is :%s", err.Error())
+	customerReq	:= &CustomerListRequest{
+		Limit: 100,
 	}
-	fmt.Sprintf("The creditors list retrieved is : %s", creditors.Values)
-
+	// list all customers
+	_, err := client.Customer.ListAllCustomers(customerReq)
+	if err != nil {
+		fmt.Sprintf("The error while getting list of customers  is :%s", err.Error())
+	}
 
 }
 

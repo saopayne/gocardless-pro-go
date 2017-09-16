@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"log"
+	"os"
+	"net/http"
 )
 
 type CustomerBankAccountService service
@@ -73,28 +76,34 @@ func (s *CustomerBankAccountService) CreateCustomerBankAccount(bankAccount *Cust
 		fmt.Println("Successful call")
 	}
 	return account, err
-}
 
-// List returns a list of customer bank accounts.
-// https://developer.gocardless.com/api-reference/#customer-bank-accounts-list-customer-bank-accounts
-func (s *CustomerBankAccountService) ListCustomerBankAccount(req *CustomerBankListRequest) (*CustomerBankAccountList, error) {
-	return s.ListNCustomerBankAccount(10, 0, req)
 }
 
 // ListN Returns a cursor-paginated list of your customer bank accounts.
 // https://developer.gocardless.com/api-reference/#customer-bank-accounts-list-customer-bank-accounts
-func (s *CustomerBankAccountService) ListNCustomerBankAccount(count, offset int, req *CustomerBankListRequest) (*CustomerBankAccountList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	u := paginateURL("/customer_bank_accounts", count, offset)
+func (s *CustomerBankAccountService) ListCustomerBankAccounts(req *CustomerBankListRequest) (*CustomerBankAccountList, error) {
+	reqd, err := http.NewRequest("GET", "/customer_bank_accounts", nil)
+
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" {params.Add("created_at[lte]", req.CreatedAt.Lte)}
+	if req.Limit > 0 {params.Add("limit", string(req.Limit))}
+
+	reqd.URL.RawQuery = params.Encode()
+
+	path := reqd.URL.String()
+
 	bankAccounts := &CustomerBankAccountList{}
-	err := s.client.Call("GET", u, params, bankAccounts)
+	err = s.client.Call("GET", path, nil, bankAccounts)
 
 	return bankAccounts, err
 }

@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
 )
 
 type CustomerService service
@@ -106,14 +109,32 @@ func (s *CustomerService) Get(id string) (*Customer, error) {
 	return cust, err
 }
 
-func (s *CustomerService) List(req *CustomerListRequest) (*CustomerList, error) {
-	return s.ListN(100, 10, req)
-}
-
 // ListN returns a list of customers
-func (s *CustomerService) ListN(count, offset int, req *CustomerListRequest) (*CustomerList, error) {
-	u := paginateURL("/customers", count, offset)
+// Further documentation can be found here: https://developer.gocardless.com/api-reference/#customers-list-customers
+func (s *CustomerService) ListAllCustomers(req *CustomerListRequest) (*CustomerList, error) {
+
+	reqd, err := http.NewRequest("GET", "/customers", nil)
+
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" {params.Add("created_at[lte]", req.CreatedAt.Lte)}
+	if req.Limit > 0 {params.Add("limit", string(req.Limit))}
+
+	reqd.URL.RawQuery = params.Encode()
+
+	path := reqd.URL.String()
+
 	cust := &CustomerList{}
-	err := s.client.Call("GET", u, nil, cust)
+	err = s.client.Call("GET", path, nil, cust)
+
 	return cust, err
 }
