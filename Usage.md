@@ -582,4 +582,14 @@ if err != nil {
     fmt.Sprintf("The error while canceling a subscription is :%s", err.Error())
 }
 fmt.Sprintf("The subscription canceled returned the response: %s ", subToCancel)
+
+//list all subscriptions
+subscriptionsListReq := &SubscriptionListRequest{
+    Limit: 100,
+}
+// list all subscriptions
+_, err := client.Subscription.ListSubscriptions(subscriptionsListReq)
+if err != nil {
+    fmt.Sprintf("The error while getting list of subscriptions  is :%s", err.Error())
+}
 ```

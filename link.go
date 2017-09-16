@@ -1,4 +1,4 @@
-package main
+package gocardless
 
 type CreditorLink struct {
 	Creditor string `json:"creditor,omitempty"`

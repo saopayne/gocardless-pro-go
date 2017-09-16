@@ -1,4 +1,4 @@
-package main
+package gocardless
 
 import (
 	"encoding/json"

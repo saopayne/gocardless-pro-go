@@ -1,4 +1,4 @@
-package main
+package gocardless
 
 import (
 	"bytes"
@@ -28,26 +28,26 @@ const (
 	acceptJsonType       = "application/json"
 )
 
-func main() {
-
-	apiKey := "sandbox_o55p5OowBX59Rd8aDR7c_25LQdBTHRaACeVnqj0o"
-
-	//second param is an optional http client, allowing overriding of the HTTP client to use.
-	//This is useful if you're running in a Google AppEngine environment
-	//where the http.DefaultClient is not available.
-	client := NewClient(apiKey, nil)
-	client.LoggingEnabled = true
-
-	payoutsListReq := &PayoutListRequest{
-		Limit: 100,
-	}
-	// list all payouts
-	_, err := client.Payout.ListPayouts(payoutsListReq)
-	if err != nil {
-		fmt.Sprintf("The error while getting list of payouts  is :%s", err.Error())
-	}
-
-}
+//func main() {
+//
+//	apiKey := "sandbox_o55p5OowBX59Rd8aDR7c_25LQdBTHRaACeVnqj0o"
+//
+//	//second param is an optional http client, allowing overriding of the HTTP client to use.
+//	//This is useful if you're running in a Google AppEngine environment
+//	//where the http.DefaultClient is not available.
+//	client := NewClient(apiKey, nil)
+//	client.LoggingEnabled = true
+//
+//	subscriptionsListReq := &SubscriptionListRequest{
+//		Limit: 100,
+//	}
+//	// list all subscriptions
+//	_, err := client.Subscription.ListSubscriptions(subscriptionsListReq)
+//	if err != nil {
+//		fmt.Sprintf("The error while getting list of subscriptions  is :%s", err.Error())
+//	}
+//
+//}
 
 type service struct {
 	client *Client

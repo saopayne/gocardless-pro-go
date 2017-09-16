@@ -1,9 +1,11 @@
-package main
+package gocardless
 
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type SubscriptionService service
@@ -92,24 +94,26 @@ func (s *SubscriptionService) CreateSubscription(subscriptionReq *SubscriptionCr
 
 // List returns a list of subscriptions
 func (s *SubscriptionService) ListSubscriptions(req *SubscriptionListRequest) (*SubscriptionList, error) {
-	return s.ListNSubscriptions(10, 0, req)
-}
+	reqd, err := http.NewRequest("GET", "/subscriptions", nil)
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" { params.Add("created_at[lte]", req.CreatedAt.Lte) }
+	if req.Limit > 0 { params.Add("limit", string(req.Limit)) }
+	if req.Mandate != "" { params.Add("mandate", req.Mandate) }
+	if req.Customer != "" { params.Add("customer", req.Customer) }
 
-func (s *SubscriptionService) ListNSubscriptions(count, offset int, req *SubscriptionListRequest) (*SubscriptionList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	params.Add("mandate", req.Mandate)
-	params.Add("customer", req.Customer)
-
-	u := paginateURL("/subscriptions", count, offset)
+	reqd.URL.RawQuery = params.Encode()
+	path := reqd.URL.String()
 	subscriptions := &SubscriptionList{}
-	err := s.client.Call("GET", u, params, subscriptions)
+	err = s.client.Call("GET", path, nil, subscriptions)
 
 	return subscriptions, err
 }
