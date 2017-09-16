@@ -278,6 +278,16 @@ if err != nil {
     fmt.Sprintf("The error while getting an event is :%s", err.Error())
 }
 fmt.Sprintf("The event retrieved with ID: %d is : %s", event.ID, event.Details)
+
+//Getting a list of events
+eventsListReq := &EventListRequest{
+    Limit: 100,
+}
+// list all events
+_, err := client.Event.ListEvents(eventsListReq)
+if err != nil {
+    fmt.Sprintf("The error while getting list of events  is :%s", err.Error())
+}
 ```
 
 ##### 7. Mandate
@@ -363,6 +373,15 @@ if err != nil {
 }
 fmt.Sprintf("The mandate reinstated returned a response: %s ", mandateToRein)
 
+// list all mandates
+mandateListReq := &MandateListRequest{
+    Limit: 100,
+}
+// list all mandates
+_, err := client.Mandate.ListNMandates(mandateListReq)
+if err != nil {
+    fmt.Sprintf("The error while getting list of mandates  is :%s", err.Error())
+}
 ```
 
 ##### 8. Mandate  PDFs

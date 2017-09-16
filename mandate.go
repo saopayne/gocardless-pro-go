@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type MandateService service
@@ -69,27 +71,30 @@ func (s *MandateService) CreateMandate(mandateReq *MandateCreateRequest) (*Manda
 }
 
 // List returns a list of mandates
-func (s *MandateService) ListMandates(req *MandateListRequest) (*MandateList, error) {
-	return s.ListNMandates(10, 0, req)
-}
+func (s *MandateService) ListNMandates(req *MandateListRequest) (*MandateList, error) {
+	reqd, err := http.NewRequest("GET", "/mandates", nil)
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" { params.Add("created_at[lte]", req.CreatedAt.Lte) }
+	if req.Limit > 0 { params.Add("limit", string(req.Limit)) }
+	if req.Reference != "" { params.Add("reference", req.Reference) }
+	if req.Status != "" { params.Add("status", req.Status) }
+	if req.CustomerBankAccount != "" {params.Add("customer_bank_account", req.CustomerBankAccount)}
+	if req.Customer != "" {params.Add("customer", req.Customer)}
+	if req.Creditor != "" {params.Add("creditor", req.Creditor)}
 
-func (s *MandateService) ListNMandates(count, offset int, req *MandateListRequest) (*MandateList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	params.Add("reference", req.Reference)
-	params.Add("status", req.Status)
-	params.Add("customer_bank_account", req.CustomerBankAccount)
-	params.Add("customer", req.Customer)
-	params.Add("creditor", req.Creditor)
-	u := paginateURL("/mandates", count, offset)
+	reqd.URL.RawQuery = params.Encode()
+	path := reqd.URL.String()
 	mandates := &MandateList{}
-	err := s.client.Call("GET", u, params, mandates)
+	err = s.client.Call("GET", path, nil, mandates)
 
 	return mandates, err
 }

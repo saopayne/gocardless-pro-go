@@ -38,13 +38,13 @@ func main() {
 	client := NewClient(apiKey, nil)
 	client.LoggingEnabled = true
 
-	customerReq	:= &CustomerListRequest{
+	mandateListReq := &MandateListRequest{
 		Limit: 100,
 	}
-	// list all customers
-	_, err := client.Customer.ListAllCustomers(customerReq)
+	// list all mandates
+	_, err := client.Mandate.ListNMandates(mandateListReq)
 	if err != nil {
-		fmt.Sprintf("The error while getting list of customers  is :%s", err.Error())
+		fmt.Sprintf("The error while getting list of mandates  is :%s", err.Error())
 	}
 
 }

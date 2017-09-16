@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/url"
+	"log"
+	"net/http"
+	"os"
 )
 
 type EventService service
@@ -58,35 +60,39 @@ type EventList struct {
 	Values []Event `json:"data"`
 }
 
-// Returns a cursor-paginated list of your events.
-// https://developer.gocardless.com/api-reference/#events-list-events
-func (s *EventService) ListEvents(req *EventListRequest) (*EventList, error) {
-	return s.ListNEvents(10, 0, req)
-}
 
 // Returns a cursor-paginated list of your events.
 // https://developer.gocardless.com/api-reference/#events-list-events
-func (s *EventService) ListNEvents(count, offset int, req *EventListRequest) (*EventList, error) {
-	params := url.Values{}
-	params.Add("after", req.After)
-	params.Add("before", req.Before)
-	params.Add("created_at[gt]", req.CreatedAt.Gt)
-	params.Add("created_at[gte]", req.CreatedAt.Gte)
-	params.Add("created_at[lt]", req.CreatedAt.Lt)
-	params.Add("created_at[lte]", req.CreatedAt.Lte)
-	params.Add("limit", string(req.Limit))
-	params.Add("action", req.Action)
-	params.Add("include", string(req.Include))
-	params.Add("mandate", req.Mandate)
-	params.Add("parent_event", req.ParentEvent)
-	params.Add("payout", req.Payout)
-	params.Add("payment", req.Payment)
-	params.Add("refund", req.Refund)
-	params.Add("resource_type", req.ResourceType.ResourceType)
-	params.Add("subscription", req.Subscription.ID)
-	u := paginateURL("/events?include=payment", count, offset)
+func (s *EventService) ListEvents(req *EventListRequest) (*EventList, error) {
+	reqd, err := http.NewRequest("GET", "/events", nil)
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+	params := reqd.URL.Query()
+	if req.After != "" { params.Add("after", req.After) }
+	if req.Before != "" { params.Add("before", req.Before) }
+	if req.CreatedAt.Gt != "" { params.Add("created_at[gt]", req.CreatedAt.Gt) }
+	if req.CreatedAt.Gte != "" { params.Add("created_at[gte]", req.CreatedAt.Gte) }
+	if req.CreatedAt.Lt != "" { params.Add("created_at[lt]", req.CreatedAt.Lt) }
+	if req.CreatedAt.Lte != "" { params.Add("created_at[lte]", req.CreatedAt.Lte) }
+	if req.Limit > 0 { params.Add("limit", string(req.Limit)) }
+	if req.Action != "" { params.Add("action", req.Action) }
+	if req.Include != "" { params.Add("include", req.Include) }
+	if req.Mandate != "" { params.Add("mandate", req.Mandate) }
+	if req.ParentEvent != "" { params.Add("parent_event", req.ParentEvent) }
+	if req.Payout != "" { params.Add("payout", req.Payout) }
+	if req.Payment != "" { params.Add("payment", req.Payment) }
+	if req.Refund != "" { params.Add("refund", req.Refund) }
+	if req.ResourceType.ResourceType != "" { params.Add("resource_type", req.ResourceType.ResourceType) }
+	if req.Subscription.ID != "" { params.Add("subscription", req.Subscription.ID)}
+
+	reqd.URL.RawQuery = params.Encode()
+
+	path := reqd.URL.String()
+
 	events := &EventList{}
-	err := s.client.Call("GET", u, nil, events)
+	err = s.client.Call("GET", path, nil, events)
 
 	return events, err
 }
