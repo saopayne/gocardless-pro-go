@@ -83,9 +83,11 @@ For a more descriptive usage [Click Here](https://github.com/saopayne/gocardless
 See the test files for more examples.
 
 ## TODO
-- [ ] Complete All Api calls
+- [x] Complete All Api calls
 - [ ] Documentation
+- [ ] Write Unit tests
 - [ ] Better handling of API call errors
 
 
 ## CONTRIBUTING
+- Fork the repository, make necessary changes and send the PR.
