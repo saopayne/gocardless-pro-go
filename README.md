@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rpip/gocardless-pro-go.svg?branch=master)](https://travis-ci.org/rpip/gocardless-pro-go)
+[![Build Status](https://travis-ci.org/saopayne/gocardless-pro-go.svg?branch=master)](https://travis-ci.org/saopayne/gocardless-pro-go)
 
 # GO Client for GoCardless Pro API
 
