@@ -7,6 +7,4 @@ go:
   - tip
 install:
   - go get "github.com/mitchellh/mapstructure"
-script:
-  - make deps
-  - make
+
