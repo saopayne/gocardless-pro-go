@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/saopayne/gocardless-pro-go.svg?branch=master)](https://travis-ci.org/saopayne/gocardless-pro-go)
-
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 # GO Client for GoCardless Pro API
